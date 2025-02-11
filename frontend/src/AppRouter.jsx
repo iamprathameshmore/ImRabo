@@ -3,7 +3,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SignUp from './pages/auth/SignUp';
 import LogIn from './pages/auth/login';
 import Verification from './pages/auth/verifiication';
-import HomePage from './pages/Home';
 import ImraboHome from './pages/Home';
 
 function AppRouter() {
