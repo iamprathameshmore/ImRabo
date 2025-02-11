@@ -2,11 +2,16 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SignUp from './pages/auth/SignUp';
 import LogIn from './pages/auth/login';
-import ForgetPassword from './pages/auth/ForgetPassword';
-import ResetPassword from './pages/auth/ResetPassword';
+import Verification from './pages/auth/verifiication';
+import HomePage from './pages/Home';
+import ImraboHome from './pages/Home';
 
 function AppRouter() {
   const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <ImraboHome/>,
+    },
     {
       path: "/sign-up",
       element: <SignUp />,
@@ -16,12 +21,8 @@ function AppRouter() {
       element: <LogIn />,
     },
     {
-      path: "/forget-password",
-      element: <ForgetPassword />,
-    },
-    {
-      path: "/reset-password",
-      element: <ResetPassword />,
+      path: "/verification",
+      element: <Verification />,
     },
   ]);
 

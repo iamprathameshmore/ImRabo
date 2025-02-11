@@ -1,22 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Logo from "../../components/logo";
 
 function LogIn() {
-  const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
-  const apiUrl = "https://example.com/api/signup";
+  const [loading, setLoading] = useState(false);
+  const apiUrl = "https://example.com/api/login";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Name:", Name);
     console.log("Email:", Email);
-    console.log("Password:", Password);
+    setLoading(true);
 
     const requestBody = {
-      name: Name,
       email: Email,
-      password: Password,
     };
 
     try {
@@ -30,109 +29,114 @@ function LogIn() {
 
       const data = await response.json();
 
-      if (response.status == 200) {
-        console.log("Signup Successful", data);
-        alert("Signup Successful");
+      if (response.ok) {
+        toast.success("🎉 Login Successful!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          draggable: true,
+          theme: "colored",
+        });
       } else {
-        console.error("Signup Failed", data);
-        alert(data.message || "Signup Failed");
+        toast.error(data.message || "❌ Login Failed! Try Again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          theme: "dark",
+        });
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("Something went wrong!");
+      toast.error("🚨 Network Error! Please check your connection.", {
+        position: "top-center",
+        autoClose: 3000,
+        icon: false,
+        hideProgressBar: true,
+        closeOnClick: true,
+        draggable: true,
+        theme: "light",
+      });
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="h-screen">
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+    <div>
+      <div className="h-screen flex items-center justify-center">
+        <ToastContainer />
+        <div className="w-full max-w-sm bg-white  rounded-lg p-6">
+          <h2 className="text-center text-2xl font-bold text-gray-900">
             Log In to your account
-            </h2>
-          </div>
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form
-              action="#"
-              method="POST"
-              className="space-y-6"
-              onSubmit={handleSubmit}
-            >
-              
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={Email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                    className="block w-full  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
+          </h2>
+          <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-900"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={Email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
 
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm/6 font-medium text-gray-900"
-                  >
-                    Password
-                  </label>
-                  <div className="text-sm">
-                  <Link to="/forget-password" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Forgot password?
-                  </Link>
-                </div>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={Password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"
-                    className="block w-full  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center  bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Sign Up
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div className="p-2 fixed bottom-0 w-full bg-zinc-100 pb-5">
-          <p className="mt-4 text-center text-sm leading-6 text-gray-500">
-            Not a member?{" "}
-            <Link
-              to="/sign-up"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+            <button
+              type="submit"
+              className="w-full flex justify-center items-center px-4 py-2 text-white bg-indigo-600 rounded-md shadow hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500"
+              disabled={loading}
             >
-              Sign Up
-            </Link>
-          </p>
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-2 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l4-4-4-4v4a8 8 0 11-8 8z"
+                  ></path>
+                </svg>
+              ) : (
+                "Log In"
+              )}
+            </button>
+
+            <p className="mt-4 text-center text-sm text-gray-500">
+              Not a member?{" "}
+              <Link
+                to="/sign-up"
+                className="font-semibold text-indigo-600 hover:text-indigo-500"
+              >
+                Sign Up
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
-    </>
+      <Logo/>
+      
+    </div>
   );
 }
 

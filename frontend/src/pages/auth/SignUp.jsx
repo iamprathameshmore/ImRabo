@@ -1,22 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Logo from "../../components/logo";
 
 function SignUp() {
-  const [Name, setName] = useState("");
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const apiUrl = "https://example.com/api/signup";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Name:", Name);
-    console.log("Email:", Email);
-    console.log("Password:", Password);
-
+    setLoading(true);
+    
     const requestBody = {
-      name: Name,
-      email: Email,
-      password: Password,
+      name,
+      email,
     };
 
     try {
@@ -30,7 +29,7 @@ function SignUp() {
 
       const data = await response.json();
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         console.log("Signup Successful", data);
         alert("Signup Successful");
       } else {
@@ -40,111 +39,82 @@ function SignUp() {
     } catch (error) {
       console.error("Error:", error);
       alert("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="h-screen">
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-          <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-              Sign Up to your Account
-            </h2>
+   <div>
+     <div className="h-screen flex justify-center items-center ">
+      <div className="p-8 bg-white  w-96">
+        <h2 className="text-center text-2xl font-bold text-gray-900 mb-6">
+          Sign Up to Your Account
+        </h2>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
           </div>
-          <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form
-              action="#"
-              method="POST"
-              className="space-y-6"
-              onSubmit={handleSubmit}
-            >
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="text"
-                    required
-                    value={Name}
-                    onChange={(e) => setName(e.target.value)}
-                    autoComplete="email"
-                    className="block w-full  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={Email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    autoComplete="email"
-                    className="block w-full  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm/6 font-medium text-gray-900"
-                  >
-                    Password
-                  </label>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={Password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    autoComplete="current-password"
-                    className="block w-full  bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  className="flex w-full justify-center  bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                >
-                  Sign Up
-                </button>
-              </div>
-            </form>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            />
           </div>
-        </div>
-        <div className="p-2 fixed bottom-0 w-full bg-zinc-100 pb-5">
-          <p className="mt-4 text-center text-sm leading-6 text-gray-500">
-            Already a member?{" "}
-            <Link
-              to="/log-in"
-              className="font-semibold text-indigo-600 hover:text-indigo-500"
+          <div>
+            <button
+              type="submit"
+              className="w-full flex justify-center items-center px-4 py-2 text-white bg-indigo-600 rounded-md shadow hover:bg-indigo-500 focus:ring-2 focus:ring-indigo-500"
+              disabled={loading}
             >
-              Log In
-            </Link>
-          </p>
-        </div>
+              {loading ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l4-4-4-4v4a8 8 0 11-8 8z"
+                  ></path>
+                </svg>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+          </div>
+        </form>
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Already a member?{' '}
+          <Link to="/log-in" className="text-indigo-600 hover:underline">
+            Log In
+          </Link>
+        </p>
       </div>
-    </>
+    </div>
+      <Logo/>
+   </div>
   );
 }
 
