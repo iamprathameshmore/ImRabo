@@ -1,9 +1,10 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import SignUp from './pages/auth/SignUp.jsx';
-import LogIn from './pages/auth/login.jsx';
-import Verification from './pages/auth/verifiication.jsx';
+
 import ImraboHome from './pages/Home';
+import LogIn from './pages/auth/login';
+import Verification from './pages/auth/verifiication';
+import SignUp from './pages/auth/SignUp';
 
 function AppRouter() {
   const router = createBrowserRouter([
