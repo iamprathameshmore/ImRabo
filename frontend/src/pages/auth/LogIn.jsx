@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Logo from "../../components/logo";
 
-function LogIn() {
+function Login() {
   const [Email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const apiUrl = "https://example.com/api/login";
@@ -139,4 +139,4 @@ function LogIn() {
   );
 }
 
-export default LogIn;
+export default Login;

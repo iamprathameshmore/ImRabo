@@ -2,9 +2,10 @@ import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 import ImraboHome from './pages/Home';
-import LogIn from './pages/auth/login'; // Ensure correct capitalization
-import Verification from './pages/auth/Verification'; // Fix typo
+
+import Verification from './pages/auth/Verification'; 
 import SignUp from './pages/auth/SignUp';
+import Login from './pages/auth/login';
 
 function AppRouter() {
   const router = createBrowserRouter([
@@ -18,7 +19,7 @@ function AppRouter() {
     },
     {
       path: "/log-in",
-      element: <LogIn />,
+      element: <Login />,
     },
     {
       path: "/verification",
