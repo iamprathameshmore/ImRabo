@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState, ChangeEvent, KeyboardEvent, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../components/logo";
 
-function Verification() {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+const Verification: React.FC = () => {
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
-  const handleChange = (index, event) => {
+  const handleChange = (index: number, event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value.replace(/\D/, ""); // Allow only numbers
     if (value.length <= 1) {
       const newOtp = [...otp];
@@ -16,18 +16,18 @@ function Verification() {
 
       // Move to next input field
       if (value && index < 5) {
-        document.getElementById(`otp-${index + 1}`).focus();
+        document.getElementById(`otp-${index + 1}`)?.focus();
       }
     }
   };
 
-  const handleKeyDown = (index, event) => {
+  const handleKeyDown = (index: number, event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Backspace" && !otp[index] && index > 0) {
-      document.getElementById(`otp-${index - 1}`).focus();
+      document.getElementById(`otp-${index - 1}`)?.focus();
     }
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
     setError("");
@@ -76,7 +76,7 @@ function Verification() {
                 id={`otp-${index}`}
                 type="text"
                 inputMode="numeric"
-                maxLength="1"
+                maxLength={1}
                 value={digit}
                 onChange={(e) => handleChange(index, e)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
@@ -137,6 +137,6 @@ function Verification() {
       <Logo />
     </>
   );
-}
+};
 
 export default Verification;

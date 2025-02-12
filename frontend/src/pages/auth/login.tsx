@@ -3,19 +3,22 @@ import { Link } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import Logo from "../../components/logo";
 
-function Login() {
-  const [Email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const apiUrl = "https://example.com/api/login";
+const apiUrl = "https://example.com/api/login";
 
-  const handleSubmit = async (event) => {
+const Login: React.FC = () => {
+  const [Email, setEmail] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  interface ApiResponse {
+    message?: string;
+  }
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log("Email:", Email);
     setLoading(true);
 
-    const requestBody = {
-      email: Email,
-    };
+    const requestBody = { email: Email };
 
     try {
       const response = await fetch(apiUrl, {
@@ -26,7 +29,7 @@ function Login() {
         body: JSON.stringify(requestBody),
       });
 
-      const data = await response.json();
+      const data: ApiResponse = await response.json();
 
       if (response.ok) {
         toast.success("🎉 Login Successful!", {
@@ -46,7 +49,6 @@ function Login() {
           draggable: true,
           theme: "dark",
         });
-        setLoading(false);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -59,6 +61,7 @@ function Login() {
         draggable: true,
         theme: "light",
       });
+    } finally {
       setLoading(false);
     }
   };
@@ -67,7 +70,7 @@ function Login() {
     <div>
       <div className="h-screen flex items-center justify-center">
         <ToastContainer />
-        <div className="w-full max-w-sm bg-white  rounded-lg p-6">
+        <div className="w-full max-w-sm bg-white rounded-lg p-6">
           <h2 className="text-center text-2xl font-bold text-gray-900">
             Log In to your account
           </h2>
@@ -133,10 +136,9 @@ function Login() {
           </form>
         </div>
       </div>
-      <Logo/>
-      
+      <Logo />
     </div>
   );
-}
+};
 
 export default Login;

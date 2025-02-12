@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function ImraboHome() {
+const Home: React.FC = () => {
   return (
-    <div className="relative w-full min-h-screen bg-tranparent text-white flex flex-col items-center justify-center">
+    <div className="relative w-full min-h-screen bg-transparent text-white flex flex-col items-center justify-center">
       {/* Background Video */}
       <video
         autoPlay
@@ -23,10 +23,10 @@ function ImraboHome() {
           <a href="#contact" className="hover:text-gray-300">Contact</a>
         </nav>
         <div className="flex space-x-4">
-          <Link to="/log-in" className="px-4 py-2 bg-white text-black font-semibold  shadow hover:shadow-lg transition">
+          <Link to="/log-in" className="px-4 py-2 bg-white text-black font-semibold shadow hover:shadow-lg transition">
             Log In
           </Link>
-          <Link to="/sign-up" className="px-4 py-2 bg-indigo-600 text-white font-semibold  shadow hover:bg-indigo-500 transition">
+          <Link to="/sign-up" className="px-4 py-2 bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-500 transition">
             Sign Up
           </Link>
         </div>
@@ -38,14 +38,14 @@ function ImraboHome() {
         <p className="text-gray-300 text-lg mt-4 max-w-2xl mx-auto">
           Imrabo seamlessly merges Artificial Intelligence with the Internet of Things, creating a smarter, more connected world.
         </p>
-        <Link to="/get-started" className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold  shadow hover:bg-indigo-500 transition inline-block">
+        <Link to="/get-started" className="mt-6 px-6 py-3 bg-indigo-600 text-white font-semibold shadow hover:bg-indigo-500 transition inline-block">
           Get Started
         </Link>
       </section>
 
       {/* Features */}
       <section id="features" className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto px-6 md:px-12 py-16">
-        {["AI Automation", "IoT Integration", "Real-time Insights"].map((feature, index) => (
+        {(["AI Automation", "IoT Integration", "Real-time Insights"] as const).map((feature, index) => (
           <div key={index} className="p-6 bg-gray-900 rounded-lg shadow-lg hover:scale-105 transition transform">
             <h3 className="text-xl font-semibold text-white">{feature}</h3>
             <p className="text-gray-400 mt-2">
@@ -74,6 +74,6 @@ function ImraboHome() {
       </footer>
     </div>
   );
-}
+};
 
-export default ImraboHome;
+export default Home;
