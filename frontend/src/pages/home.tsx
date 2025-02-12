@@ -11,7 +11,7 @@ const Home: React.FC = () => {
         muted
         className="absolute top-0 left-0 w-full h-screen object-cover -z-10 opacity-80"
       >
-        <source src="/public/210424.mp4" type="video/mp4" />
+        <source src="/210424.mp4" type="video/mp4" />
       </video>
 
       {/* Navigation */}
