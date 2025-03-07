@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+#nprogress .bar {
+    background: #ff5733 !important; /* Change color */
+    height: 4px !important; /* Change thickness */
+  }
+  

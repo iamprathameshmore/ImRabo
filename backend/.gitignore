@@ -1,0 +1,54 @@
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+__pycache__
+db.sqlite3
+media
+staticfiles
+
+# Django migrations
+*/migrations/*
+!*/migrations/__init__.py
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Python environment
+.env
+.venv
+venv/
+ENV/
+env/
+
+# MySQL / PostgreSQL
+*.sql
+*.sqlite3
+*.db
+
+# Django REST Framework
+*.graphql
+
+# Coverage reports
+.coverage
+coverage.xml
+*.coveragerc
+
+# Django settings file
+settings_local.py
+
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+build/
+*.tar.gz
+
+# macOS
+.DS_Store
+
