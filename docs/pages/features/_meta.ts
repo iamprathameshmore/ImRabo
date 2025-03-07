@@ -1,0 +1,16 @@
+export default {
+  'short-text-input': 'Short Text Input',
+  'long-text-input': 'Long Text Input',
+  'opinion-scale': 'Opinion Scale',
+  checkboxes: 'Checkboxes',
+  'multi-select': 'Multi Select',
+  'multiple-choice': 'Multiple Choice',
+  rating: 'Rating',
+  text: 'Text',
+  headings: 'Headings',
+  'hidden-fields': 'Hidden Fields',
+  'remove-makeform-branding': 'Remove Makeform branding',
+  'email-notifications': 'Email notifications',
+  'share-setting': 'Share setting',
+  'summary-detail': 'Summary details',
+}
