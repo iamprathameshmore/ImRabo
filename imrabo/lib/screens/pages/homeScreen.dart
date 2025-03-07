@@ -1,9 +1,7 @@
-import 'dart:ffi';
-
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:imrabo/screens/profileScreen.dart';
+import 'package:imrabo/screens/pages/notificationScreen.dart';
+import 'package:imrabo/screens/pages/profileScreen.dart';
 import 'package:flutter/rendering.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         slivers: [
           SliverAppBar(
             expandedHeight: 0,
+            automaticallyImplyLeading: false,
             floating: true,
             pinned: false,
             elevation: 5,
@@ -100,7 +99,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             actions: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
+              IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationScreen()));
+                  },
+                  icon: Icon(Icons.notifications)),
               IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
               SizedBox(
                 width: 5,
@@ -110,7 +116,23 @@ class _HomeScreenState extends State<HomeScreen> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                _buildMonitoringCard(),
+                Container(
+                  height: 250,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.purple,
+                        Colors.deepPurpleAccent.shade400,
+                        Colors.blue.shade400,
+                        Colors.blueAccent.shade100,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                ),
+                // _buildMonitoringCard(),
                 _buildIconGrid(),
                 _buildIntegrationsGrid(),
                 _buildAutomationCarousel(),
@@ -225,22 +247,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
-        child: FloatingActionButton.extended(
-          splashColor: Colors.deepPurpleAccent.shade400,
-          onPressed: () {},
-          label: Text(
-            'imrabo',
-            style:
-                GoogleFonts.dmSans(fontWeight: FontWeight.bold, fontSize: 15),
+        child: InkWell(
+          child: FloatingActionButton.extended(
+            splashColor: Colors.deepPurpleAccent.shade400,
+            onPressed: () {},
+            label: Text(
+              'imrabo',
+              style:
+                  GoogleFonts.dmSans(fontWeight: FontWeight.bold, fontSize: 15),
+            ),
+            icon: Image(
+              image: AssetImage('assets/imrabo-logo.png'),
+              height: 25,
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(100))),
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
           ),
-          icon: Image(
-            image: AssetImage('assets/imrabo-logo.png'),
-            height: 25,
-          ),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(100))),
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -270,13 +294,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMonitoringCard() {
-    return Container(
-        child: Image(
-            fit: BoxFit.fitWidth,
-            image: NetworkImage(
-                'https://i.pinimg.com/736x/36/27/05/3627056545c2c414a351ba8c7378739f.jpg')));
-  }
+  // Widget _buildMonitoringCard() {
+  //   return Container(
+  //       child: Image(
+  //           fit: BoxFit.fitWidth,
+  //           image: NetworkImage(
+  //               'https://i.pinimg.com/736x/36/27/05/3627056545c2c414a351ba8c7378739f.jpg')));
+  // }
 
   Widget _buildIconGrid() {
     Map<String, IconData> devices = {

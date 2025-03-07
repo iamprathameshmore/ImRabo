@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:imrabo/screens/homeScreen.dart';
+import 'package:imrabo/screens/welcomeScreen.dart';
 import 'package:device_preview/device_preview.dart';
 
 void main() => runApp(
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         textTheme: GoogleFonts.dmSansTextTheme(), // Apply Poppins globally
       ),
-      home: HomeScreen(),
+      home: WelcomeScreen(),
     );
   }
 }
