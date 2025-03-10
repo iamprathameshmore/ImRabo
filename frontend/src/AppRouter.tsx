@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { createBrowserRouter, RouterProvider, useLocation } from "react-router-dom";
-import Home from "./pages/home";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Login from "./pages/auth/login";
 import SignUp from "./pages/auth/signup";
 import Verification from "./pages/auth/verification";
@@ -15,17 +14,14 @@ import AutomationScreen from "./pages/dashboard/automation";
 
 
 const router = createBrowserRouter([
+
   {
     path: "/",
-    element: <Home />,
+    element: <Login />,
   },
   {
     path: "/sign-up",
     element: <SignUp />,
-  },
-  {
-    path: "/log-in",
-    element: <Login />,
   },
   {
     path: "/verification",
@@ -33,27 +29,27 @@ const router = createBrowserRouter([
   },
   {
     path: "dashboard",
-    element:<DashboardLayout  />,
+    element: <DashboardLayout />,
     children: [
       {
         path: "",
-        element: <Dashboard/>,
+        element: <Dashboard />,
       },
       {
         path: "profile",
-        element: <Profile/>,
+        element: <Profile />,
       },
       {
         path: "settings",
-        element: <Settings/>,
+        element: <Settings />,
       },
       {
         path: "integraions",
-        element: <IntegrationAutomation/>,
+        element: <IntegrationAutomation />,
       },
       {
         path: "automation",
-        element: <AutomationScreen/>,
+        element: <AutomationScreen />,
       },
 
     ],
@@ -66,7 +62,7 @@ const AppRouter: React.FC = () => {
   return <>
 
 
-  <RouterProvider router={router} />;
+    <RouterProvider router={router} />;
   </>
 };
 
