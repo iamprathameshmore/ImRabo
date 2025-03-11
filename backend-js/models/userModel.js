@@ -7,7 +7,7 @@ const UserSchema = new Schema({
         unique:true,
         require:true
     },
-    otp:String
+    secret:String
 
 }) 
 
