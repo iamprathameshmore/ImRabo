@@ -1,14 +1,10 @@
 import { Router } from "express";
-import emailLogInController from "../controllers/auth/emailLogInController.js";
-import emailSignUpController from "../controllers/auth/emailSignUpController.js";
-import emailVerificationController from "../controllers/auth/emailVerificationController.js";
-import { validateEmailLogin, validateEmailSignUp, validateEmailVerification } from "../middlewares/authValidatore.js";
 
-const AuthRouter = Router();
+const LogRoute = Router();
 
-AuthRouter.post("/log-in",validateEmailLogin, emailLogInController);
-AuthRouter.post("/sign-up", validateEmailSignUp,emailSignUpController);
-AuthRouter.post("/verify", validateEmailVerification,emailVerificationController);
+LogRoute.post("/admin/logs",()=>{
+    return null
+});
 
-export default AuthRouter;
+export default LogRoute;
 

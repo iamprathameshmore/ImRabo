@@ -1,6 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
 
-const SECRET_KEY = process.env.KEY;
+const SECRET_KEY = process.env.Key;
 
 function generateToken(payload) {
   return jsonwebtoken.sign(payload, SECRET_KEY);

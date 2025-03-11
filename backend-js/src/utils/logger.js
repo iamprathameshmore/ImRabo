@@ -1,34 +1,25 @@
 import path from "path";
 import fs from "fs";
-import pinoLogger from "pino";
+import pino from "pino";
 
+// Ensure logs directory exists
 const logDir = path.join(process.cwd(), "logs");
 fs.mkdirSync(logDir, { recursive: true });
 
-const env = process.env.NODE_ENV || "debug";
+// Format the date for log file names (YYYY-MM-DD)
+const formattedDate = new Date().toISOString().split("T")[0];
 
-const date = new Date()
-const formattedDate = date.toISOString().split("T")[0]; 
+// Define log file path (Single file per day)
+const logFilePath = path.join(logDir, `${formattedDate}.log`);
 
-const logConfig = {
-  debug: { level: "debug", file: `./debug/${formattedDate}.log` },
-  test: { level: "warn", file: `./test/${formattedDate}.log` },
-  release: { level: "info", file: `./release/${formattedDate}.log` },
-};
-
-
-const logFilePath = path.join(logDir, logConfig[env].file);
-
-
-const logger = pinoLogger(
+// Initialize Pino Logger
+const logger = pino(
   {
-    level: logConfig[env].level,
-    transport:
-      env === "debug"
-        ? { target: "pino-pretty" } 
-        : undefined, 
+    transport: {
+      target: "pino-pretty", // Pretty print logs for readability
+    },
   },
-  pinoLogger.destination(logFilePath),
+  pino.destination(logFilePath) // Store logs in a daily file
 );
 
 export default logger;

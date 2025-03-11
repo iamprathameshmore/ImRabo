@@ -4,7 +4,7 @@ import emailLogInController from "../controllers/auth/emailLogInController.js";
 
 const ProfileRoute = Router();
 
-ProfileRoute.post("/Profile",validateEmailLogin, emailLogInController);
+ProfileRoute.post("/:useremail", emailLogInController);
 
 export default ProfileRoute;
 
