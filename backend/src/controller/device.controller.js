@@ -1,90 +1,93 @@
-import UserModel from '../model/user.model.js'; // Import the User model
-import { validationResult } from 'express-validator';
+import DeviceModel from "../model/device.model.js";
+import { validationResult } from "express-validator";
 
-// 📌 Create (POST) Device
+// 📌 1️⃣ Create (POST) Device
 export async function postDeviceController(req, res) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { userId, deviceId, deviceType, ipAddress, location } = req.body;
+    const { deviceName, deviceType } = req.body;
+    const userId = req.userId; // Extracted from JWT middleware
 
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) return res.status(404).json({ msg: 'User not found' });
+    try {
+        const existingDevice = await DeviceModel.findOne({ userId, deviceName });
+        if (existingDevice) return res.status(400).json({ msg: "Device already registered for this user" });
 
-    const newDevice = {
-      deviceId,
-      deviceType,
-      lastUsed: new Date(),
-      ipAddress,
-      location,
-      isTrusted: false,
-    };
+        const newDevice = new DeviceModel({ userId, deviceName, deviceType });
+        await newDevice.save();
 
-    user.devices.push(newDevice);
-    await user.save();
-
-    res
-      .status(201)
-      .json({ msg: 'Device added successfully', device: newDevice });
-  } catch (error) {
-    res.status(500).json({ msg: 'Server Error', error: error.message });
-  }
+        res.status(201).json({ msg: "Device added successfully", device: newDevice });
+    } catch (error) {
+        console.error("❌ Error in postDeviceController:", error);
+        res.status(500).json({ msg: "Server Error", error: error.message });
+    }
 }
 
-// 📌 Read (GET) Devices
-export async function getDeviceController(req, res) {
-  const { userId } = req.params;
-
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) return res.status(404).json({ msg: 'User not found' });
-
-    res.json({ devices: user.devices });
-  } catch (error) {
-    res.status(500).json({ msg: 'Server Error', error: error.message });
-  }
+// 📌 2️⃣ Get All Devices (For Logged-in User)
+export async function getDevicesController(req, res) {
+    try {
+        const devices = await DeviceModel.find({ userId: req.userId });
+        res.status(200).json({ devices });
+    } catch (error) {
+        console.error("❌ Error in getDevicesController:", error);
+        res.status(500).json({ msg: "Server Error", error: error.message });
+    }
 }
 
-// 📌 Update (PUT) Device
-export async function putDeviceController(req, res) {
-  const { userId, deviceId } = req.params;
-  const { deviceType, ipAddress, location, isTrusted } = req.body;
+// 📌 3️⃣ Get Single Device by ID
+export async function getDeviceByIdController(req, res) {
+    const { deviceId } = req.params;
 
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) return res.status(404).json({ msg: 'User not found' });
+    try {
+        const device = await DeviceModel.findOne({ _id: deviceId, userId: req.userId });
+        if (!device) return res.status(404).json({ msg: "Device not found" });
 
-    const device = user.devices.id(deviceId);
-    if (!device) return res.status(404).json({ msg: 'Device not found' });
-
-    if (deviceType) device.deviceType = deviceType;
-    if (ipAddress) device.ipAddress = ipAddress;
-    if (location) device.location = location;
-    if (typeof isTrusted === 'boolean') device.isTrusted = isTrusted;
-
-    await user.save();
-
-    res.json({ msg: 'Device updated successfully', device });
-  } catch (error) {
-    res.status(500).json({ msg: 'Server Error', error: error.message });
-  }
+        res.status(200).json({ device });
+    } catch (error) {
+        console.error("❌ Error in getDeviceByIdController:", error);
+        res.status(500).json({ msg: "Server Error", error: error.message });
+    }
 }
 
-// 📌 Delete (DELETE) Device
+
+// 📌 5️⃣ Update Device (PUT)
+export async function updateDeviceController(req, res) {
+    const { deviceId } = req.params;
+    const { deviceType, isActive, isTrusted } = req.body;
+
+    try {
+        const updateData = { deviceType, isTrusted, lastUsed: new Date() };
+        if (isActive !== undefined) {
+            updateData.isActive = isActive;
+            updateData.lastConnected = isActive ? new Date() : null;
+        }
+
+        const updatedDevice = await DeviceModel.findOneAndUpdate(
+            { _id: deviceId, userId: req.userId },
+            { $set: updateData },
+            { new: true }
+        );
+
+        if (!updatedDevice) return res.status(404).json({ msg: "Device not found" });
+
+        res.status(200).json({ msg: "Device updated successfully", device: updatedDevice });
+    } catch (error) {
+        console.error("❌ Error in updateDeviceController:", error);
+        res.status(500).json({ msg: "Server Error", error: error.message });
+    }
+}
+
+// 📌 6️⃣ Delete Device (DELETE)
 export async function deleteDeviceController(req, res) {
-  const { userId, deviceId } = req.params;
+    const { deviceId } = req.params;
 
-  try {
-    const user = await UserModel.findById(userId);
-    if (!user) return res.status(404).json({ msg: 'User not found' });
+    try {
+        const deletedDevice = await DeviceModel.findOneAndDelete({ _id: deviceId, userId: req.userId });
+        if (!deletedDevice) return res.status(404).json({ msg: "Device not found" });
 
-    user.devices = user.devices.filter((d) => d._id.toString() !== deviceId);
-    await user.save();
-
-    res.json({ msg: 'Device deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ msg: 'Server Error', error: error.message });
-  }
+        res.status(200).json({ msg: "Device deleted successfully" });
+    } catch (error) {
+        console.error("❌ Error in deleteDeviceController:", error);
+        res.status(500).json({ msg: "Server Error", error: error.message });
+    }
 }

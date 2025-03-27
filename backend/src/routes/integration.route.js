@@ -1,16 +1,52 @@
-import { Router } from 'express';
+import express from "express";
 import {
-  deleteIntegrationController,
-  getIntegrationController,
   postIntegrationController,
+  getIntegrationsController,
+  getIntegrationByIdController,
   putIntegrationController,
-} from '../controller/integration.controller.js';
+  deleteIntegrationController,
+} from "../controller/integration.controller.js";
+import {
+  validateCreateIntegration,
+  validateUpdateIntegration,
+  validateIntegrationId,
+} from "../validator/integration.validator.js";
 
-const integrationRouter = Router();
+const integrationRouter = express.Router();
 
-integrationRouter.post('/', postIntegrationController);
-integrationRouter.get('/:userId', getIntegrationController);
-integrationRouter.put('/:userId/:automationId', putIntegrationController);
-integrationRouter.delete('/:userId/:automationId', deleteIntegrationController);
+
+// 📌 Create Integration
+integrationRouter.post(
+  "/",
+
+  validateCreateIntegration,
+  postIntegrationController
+);
+
+// 📌 Get All Integrations
+integrationRouter.get("/", getIntegrationsController);
+
+// 📌 Get Integration by ID
+integrationRouter.get(
+  "/:integrationId",
+
+  validateIntegrationId,
+  getIntegrationByIdController
+);
+
+// 📌 Update Integration
+integrationRouter.put(
+  "/:integrationId",
+
+  validateUpdateIntegration,
+  putIntegrationController
+);
+
+// 📌 Delete Integration
+integrationRouter.delete(
+  "/:integrationId",
+  validateIntegrationId,
+  deleteIntegrationController
+);
 
 export default integrationRouter;

@@ -2,7 +2,6 @@ import { body } from 'express-validator';
 
 export const logInValidator = [
   body('email').isEmail().withMessage('Invalid email format'),
-  body('password').notEmpty().withMessage('Password is required'),
 ];
 
 export const signUpValidator = [
@@ -11,8 +10,8 @@ export const signUpValidator = [
 ];
 
 export const verificationValidator = [
+  body('email').isEmail().withMessage('Invalid email format'),
   body('otp')
-    .isInt()
     .isLength({ min: 4, max: 6 })
     .withMessage('OTP must be 4-6 digits'),
 ];

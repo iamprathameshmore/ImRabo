@@ -1,64 +1,117 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { validationResult } from 'express-validator';
 import UserModel from '../model/user.model.js';
-import { generateOtp, verifyOtp } from '../services/otp.services.js';
+import { generateOtp } from '../services/otp.services.js';
+import { sendOTPEmail } from '../services/mail.services.js';
+import dotenv from 'dotenv';
 
-// User Registration (With OTP)
+dotenv.config();
+
+// ✅ User Registration (With OTP)
 export const signUpAuthController = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty())
+  if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
+  }
 
-  const { name, email } = req.body;
+  const { name, email } = req.body; // ✅ No password needed
 
-  const existingUser = await UserModel.findOne({ email });
-  if (existingUser) return res.status(400).json({ msg: 'User already exists' });
+  try {
+    const existingUser = await UserModel.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ msg: 'User already exists' });
+    }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  await UserModel.insertOne({
-    name,
-    email,
-    password: hashedPassword,
-    verified: false,
-  });
+    const otp = generateOtp();
+    const hashedOTP = await bcrypt.hash(otp, 10);
 
-  const otp = generateOtp(email);
-  res.json({ msg: 'OTP sent to email', otp });
+    await sendOTPEmail(email, otp); // ✅ Send OTP to user
+
+    // ✅ Store OTP hash instead of password
+    await UserModel.create({
+      name,
+      email,
+      secret: hashedOTP,
+      isVerified: false,
+    });
+
+    res.status(200).json({ msg: 'OTP sent to email' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
 };
 
-// OTP Verification
+// ✅ OTP Verification
 export const verificationAuthController = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty())
+  if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
+  }
 
   const { email, otp } = req.body;
-  const result = verifyOtp(email, otp);
 
-  if (!result.success) return res.status(400).json(result);
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
 
-  await UserModel.updateOne({ email }, { $set: { verified: true } });
+    // Check if OTP is correct
+    const isOtpValid = await bcrypt.compare(otp, user.secret);
+    if (!isOtpValid) {
+      return res.status(400).json({ msg: 'Invalid OTP' });
+    }
 
-  res.json({ msg: 'OTP verified, user can now log in' });
+    // ✅ Mark user as verified
+    await UserModel.updateOne({ email });
+
+    // ✅ Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email },
+      process.env.JWT_SECRET, 
+      { expiresIn: '7d' } 
+    );
+
+    res.status(200).json({ msg: 'Login successful', token });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
 };
 
-// User Login
+// ✅ User Login (Send OTP)
 export const logInAuthController = async (req, res) => {
   const errors = validationResult(req);
-  if (!errors.isEmpty())
+  if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
+  }
 
-  const { email, password } = req.body;
-  const user = await UserModel.findOne({ email });
+  const { email } = req.body;
 
-  if (!user) return res.status(400).json({ msg: 'User not found' });
-  if (!user.verified)
-    return res
-      .status(400)
-      .json({ msg: 'User not verified. Verify OTP first.' });
+  try {
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
 
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) return res.status(400).json({ msg: 'Incorrect password' });
+    const otp = generateOtp(); 
+    const hashedOTP = await bcrypt.hash(otp, 10); 
+    await sendOTPEmail(email, otp); 
 
-  res.json({ msg: 'Login successful' });
+    // ✅ Update user OTP in the database
+    await UserModel.updateOne(
+      { email },
+      { $set: { secret: hashedOTP, isVerified: false } }
+    );
+
+    res.status(200).json({ msg: 'OTP sent to email' });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
 };

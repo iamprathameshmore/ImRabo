@@ -1,27 +1,5 @@
 import mongoose from 'mongoose';
 
-const DeviceSchema = new mongoose.Schema({
-  deviceId: { type: String, required: true },
-  deviceType: { type: String, required: true },
-  lastUsed: { type: Date, default: Date.now },
-  ipAddress: { type: String },
-  location: { type: String },
-  isTrusted: { type: Boolean, default: false },
-});
-
-const IntegrationSchema = new mongoose.Schema({
-  integrationName: { type: String, required: true },
-  apiKey: { type: String, required: true },
-  isActive: { type: Boolean, default: true },
-  connectedAt: { type: Date, default: Date.now },
-});
-
-const AutomationSchema = new mongoose.Schema({
-  automationName: { type: String, required: true },
-  triggerEvent: { type: String, required: true },
-  actions: [{ type: String, required: true }],
-  isEnabled: { type: Boolean, default: true },
-});
 
 const UserSchema = new mongoose.Schema(
   {
@@ -33,11 +11,16 @@ const UserSchema = new mongoose.Schema(
     },
     secret: String,
     phoneNumber: String,
-    devices: [DeviceSchema],
-    integrations: [IntegrationSchema],
-    automations: [AutomationSchema],
+    
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    automations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Automation" }],
+    integrations: [{ type: mongoose.Schema.Types.ObjectId, ref: "Integration" }],
+    devices: [{ type: mongoose.Schema.Types.ObjectId, ref: "Device" }],
     isActive: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified:{
       type: Boolean,
       default: false,
     },

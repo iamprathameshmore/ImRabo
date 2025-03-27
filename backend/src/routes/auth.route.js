@@ -16,7 +16,7 @@ const authRouter = Router();
 authRouter.post('/log-in', logInValidator, logInAuthController);
 authRouter.post('/sign-up', signUpValidator, signUpAuthController);
 authRouter.post(
-  '/verification',
+  '/verify',
   verificationValidator,
   verificationAuthController
 );

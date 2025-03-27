@@ -9,6 +9,8 @@ import {
   errorHandler,
   notFoundHandler,
 } from './middleware/errorHandler.middleware.js';
+import { authenticateUser } from './middleware/authicate.middleware.js';
+import { handleValidationErrors } from './middleware/validation.middleware.js';
 
 const app = express();
 
@@ -19,10 +21,10 @@ app.use(CORS());
 app.use(requestLogger);
 
 app.use('/auth', authRouter);
-app.use('/automation', automationRouter);
-app.use('/integration', integrationRouter);
-app.use('/device', deviceRouter);
+app.use('/automation',authenticateUser,handleValidationErrors,automationRouter);
+app.use('/integration',authenticateUser ,integrationRouter);
+app.use('/device',  authenticateUser,deviceRouter);
 
-// app.use(notFoundHandler);
-// app.use(errorHandler);
+app.use(notFoundHandler);
+app.use(errorHandler);
 export default app;
