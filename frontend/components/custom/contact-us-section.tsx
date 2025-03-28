@@ -1,4 +1,5 @@
 "use client";
+"use client";
 
 import { CalendarIcon, Check, MoveRight, PhoneCall } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +12,7 @@ import { format } from "date-fns";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-export const Contact1 = () => {
+export const ContactImrabo = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
 
   return (
@@ -21,43 +22,42 @@ export const Contact1 = () => {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-4">
               <div>
-                <Badge>Contact</Badge>
+                <Badge>Contact Imrabo</Badge>
               </div>
               <div className="flex flex-col gap-2">
                 <h4 className="text-3xl md:text-5xl tracking-tighter max-w-xl text-left font-regular">
-                  Something new
+                  Let's Connect with Imrabo
                 </h4>
                 <p className="text-lg leading-relaxed tracking-tight text-muted-foreground max-w-sm text-left">
-                  Managing a small business today is already tough. Avoid
-                  further complications by ditching outdated, tedious trade
-                  methods.
+                  Imrabo is here to help you streamline your processes and make your business operations smoother. Connect with us for personalized consultations.
                 </p>
               </div>
             </div>
+
             <div className="flex flex-row gap-6 items-start text-left">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
                 <p>Easy to use</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it easy to use and understand.
+                  We’ve made it easy for you to connect and get the help you need in no time.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start text-left">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Fast and reliable</p>
+                <p>Fast response</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it easy to use and understand.
+                  Our team at Imrabo is ready to assist you with quick solutions and personalized guidance.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start text-left">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Beautiful and modern</p>
+                <p>Modern approach</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it easy to use and understand.
+                  Our methods are innovative and tailored to meet your business’s evolving needs.
                 </p>
               </div>
             </div>
@@ -65,9 +65,9 @@ export const Contact1 = () => {
 
           <div className="justify-center flex items-center">
             <div className="rounded-md max-w-sm flex flex-col border p-8 gap-4">
-              <p>Book a meeting</p>
+              <p>Book a consultation with Imrabo</p>
               <div className="grid w-full max-w-sm items-center gap-1">
-                <Label htmlFor="picture">Date</Label>
+                <Label htmlFor="date">Preferred Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -92,20 +92,24 @@ export const Contact1 = () => {
                 </Popover>
               </div>
               <div className="grid w-full max-w-sm items-center gap-1">
-                <Label htmlFor="firstname">First name</Label>
-                <Input id="firstname" type="text" />
+                <Label htmlFor="firstname">First Name</Label>
+                <Input id="firstname" type="text" placeholder="Your First Name" />
               </div>
               <div className="grid w-full max-w-sm items-center gap-1">
-                <Label htmlFor="lastname">Last name</Label>
-                <Input id="lastname" type="text" />
+                <Label htmlFor="lastname">Last Name</Label>
+                <Input id="lastname" type="text" placeholder="Your Last Name" />
               </div>
               <div className="grid w-full max-w-sm items-center gap-1">
-                <Label htmlFor="picture">Upload resume</Label>
-                <Input id="picture" type="file" />
+                <Label htmlFor="email">Email</Label>
+                <Input id="email" type="email" placeholder="Your Email" />
+              </div>
+              <div className="grid w-full max-w-sm items-center gap-1">
+                <Label htmlFor="message">Message</Label>
+                <Input id="message" type="text" placeholder="Your Message" />
               </div>
 
               <Button className="gap-4 w-full">
-                Book the meeting <MoveRight className="w-4 h-4" />
+                Schedule a Meeting <MoveRight className="w-4 h-4" />
               </Button>
             </div>
           </div>

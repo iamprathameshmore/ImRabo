@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { 
     InputOTP, 
@@ -20,7 +21,7 @@ export default function VerifyPage() {
     useEffect(() => {
         const storedEmail = sessionStorage.getItem("email");
         if (!storedEmail) {
-            toast.error("No email found. Redirecting...");
+           toast.error("No email found. Redirecting...");
             router.push("/"); // Redirect to login if no email found
         } else {
             setEmail(storedEmail);
@@ -30,7 +31,7 @@ export default function VerifyPage() {
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
         if (otp.length !== 4) {
-            toast.error("OTP must be 4 digits.");
+           toast.error("OTP must be 4 digits.");
             return;
         }
 
@@ -46,15 +47,15 @@ export default function VerifyPage() {
             const data = await response.json();
 
             if (response.ok) {
-                toast.success("✅ Login successful!");
+               toast.success("✅ Login successful!");
                 sessionStorage.setItem("token", data.token); // Store JWT token
                 sessionStorage.removeItem("email"); // Remove email after successful login
                 router.push("/dashboard"); // Redirect to dashboard
             } else {
-                toast.error(data.msg || "Invalid OTP. Try again.");
+               toast.error(data.msg || "Invalid OTP. Try again.");
             }
         } catch (error) {
-            toast.error("❌ Something went wrong.");
+           toast.error("❌ Something went wrong.");
         } finally {
             setLoading(false);
         }
@@ -62,7 +63,7 @@ export default function VerifyPage() {
 
     return (
         <div className="flex min-h-screen w-full items-center justify-center p-6 md:p-10">
-            <Toaster /> {/* Toast notifications renderer */}
+            <Toaster /> {/*toast notifications renderer */}
             <div className="w-full max-w-sm text-center">
                 <h1 className="text-xl font-bold">Enter OTP</h1>
                 <p className="text-sm text-gray-600">A 4-digit code was sent to {email}</p>
@@ -94,7 +95,7 @@ export default function VerifyPage() {
                 <p className="text-sm mt-4">
                     Didn't receive the code?{" "}
                     <button 
-                        onClick={() => toast.info("Resending OTP...")} 
+                        onClick={() =>toast.info("Resending OTP...")} 
                         className="underline text-blue-600 hover:text-blue-800"
                     >
                         Resend

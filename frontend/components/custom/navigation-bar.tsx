@@ -70,14 +70,14 @@ const [isOpen, setOpen] = useState(false);
 return (
     <header className="w-full z-40 fixed top-0 left-0 bg-background px-5">
     <div className="container relative mx-auto min-h-20 flex gap-4 flex-row lg:grid lg:grid-cols-3 items-center">
-        <div className="justify-start items-center gap-4 lg:flex hidden flex-row">
-        <NavigationMenu className="flex justify-start items-start">
-            <NavigationMenuList className="flex justify-start gap-4 flex-row">
+        <div className="justify-start items-center gap-4 lg:flex hidden flex-row ">
+        <NavigationMenu className="flex justify-start items-start ">
+            <NavigationMenuList className="flex justify-start gap-4 flex-row ">
             {navigationItems.map((item) => (
                 <NavigationMenuItem key={item.title}>
                 {item.href ? (
                     <>
-                    <NavigationMenuLink>
+                    <NavigationMenuLink > 
                         <Button variant="ghost">{item.title}</Button>
                     </NavigationMenuLink>
                     </>
@@ -86,7 +86,7 @@ return (
                     <NavigationMenuTrigger className="font-medium text-sm">
                         {item.title}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="!w-[450px] p-4">
+                    <NavigationMenuContent className="!w-[450px] p-4 bg-white">
                         <div className="flex flex-col lg:grid grid-cols-2 gap-4">
                         <div className="flex flex-col h-full justify-between">
                             <div className="flex flex-col">
@@ -124,12 +124,12 @@ return (
         <p className="font-semibold">Imrabo</p>
         </div>
         <div className="flex justify-end w-full gap-4">
-        <Button variant="ghost" className="hidden md:inline">
+        {/* <Button variant="ghost" className="hidden md:inline">
             Book a demo
         </Button>
-        <div className="border-r hidden md:inline"></div>
-        <Button variant="outline">Sign in</Button>
-        <Button>Get started</Button>
+        <div className="border-r hidden md:inline"></div> */}
+       <Link href={'/log-in'}> <Button variant="outline">Log in</Button></Link>
+        <Link href={'/sign-up'} ><Button type='submit'>Get started</Button></Link>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">
         <Button variant="ghost" onClick={() => setOpen(!isOpen)}>

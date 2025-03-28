@@ -6,14 +6,14 @@ export const Feature2 = () => (
     <div className="container mx-auto">
       <div className="flex gap-4 py-20 lg:py-40 flex-col items-start">
         <div>
-          <Badge>Platform</Badge>
+          <Badge>Imrabo Platform</Badge>
         </div>
         <div className="flex gap-2 flex-col">
           <h2 className="text-3xl md:text-5xl tracking-tighter lg:max-w-xl font-regular">
-            Something new!
+            Powering the Future of IoT & AI Automation
           </h2>
           <p className="text-lg max-w-xl lg:max-w-xl leading-relaxed tracking-tight text-muted-foreground">
-            Managing a small business today is already tough.
+            Imrabo simplifies IoT and AI integration, bringing you seamless automation for your business processes.
           </p>
         </div>
         <div className="flex gap-10 pt-12 flex-col w-full">
@@ -21,54 +21,54 @@ export const Feature2 = () => (
             <div className="flex flex-row gap-6 w-full items-start">
               <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Easy to use</p>
+                <p>Seamless IoT Integration</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it easy to use and understand.
+                  Easily connect and manage all your IoT devices in one platform.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Fast and reliable</p>
+                <p>AI-Powered Automation</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it fast and reliable.
+                  Automate complex tasks and processes using advanced AI algorithms.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Beautiful and modern</p>
+                <p>Real-Time Data Insights</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it beautiful and modern.
+                  Gain real-time insights into your operations to make data-driven decisions.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 w-full items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Easy to use</p>
+                <p>Scalable & Flexible</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it easy to use and understand.
+                  Scale your operations effortlessly with a flexible platform that adapts to your needs.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Fast and reliable</p>
+                <p>Secure & Reliable</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it fast and reliable.
+                  Rest assured with top-notch security and high reliability for all your operations.
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+              <Check className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Beautiful and modern</p>
+                <p>Unified Control</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it beautiful and modern.
+                  Manage everything from a single interface for an intuitive experience.
                 </p>
               </div>
             </div>
