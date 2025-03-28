@@ -63,7 +63,10 @@ async function startServer() {
         // ✅ Initialize WebSocket Logic **After** DB is Connected
         await setupSocket(io);
 
-        server.listen(port, '0.0.0.0',() => console.log(`🚀 Server Started at http://localhost:${port}`));
+        server.listen(port, '0.0.0.0', () => 
+            console.log(`🚀 Server Started at http://localhost:${port}`)
+          );
+          
     } catch (error) {
         console.error("❌ Database Connection Failed:", error);
         process.exit(1); // Exit if DB connection fails

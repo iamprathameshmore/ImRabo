@@ -1,68 +1,45 @@
 export default function setupSocket(io) {
-    const imraboNamespace = io.of("/imrabo-socket"); // ✅ Namespace defined
+    const namespace = io.of("/imrabo-socket");
 
-    imraboNamespace.on("connection", (socket) => {
-        console.log(`✅ A user connected to /imrabo-socket: ${socket.id}`);
+    namespace.on("connection", (socket) => {
+        console.log(`✅ User connected: ${socket.id}`);
 
-        // ✅ Extract userId & roomId from connection query parameters
-        const userId = socket.handshake.query.userId;
+        // Join a room if provided in query params
         const roomId = socket.handshake.query.roomId;
-
-        if (!userId) {
-            console.log("❌ No userId provided, disconnecting socket.");
-            return socket.disconnect();
-        }
-
-        // ✅ User gets a **private room** by default
-        const privateRoom = `user-${userId}`;
-        socket.join(privateRoom);
-        console.log(`🔒 User ${userId} joined private room: ${privateRoom}`);
-
-        // ✅ Notify the user that they joined their private room
-        socket.to(privateRoom).emit("roomJoined", {
-            roomId: privateRoom,
-            message: `🔒 User ${userId} joined private room: ${privateRoom}`
-        });
-
-        // ✅ If `roomId` is provided, join that too
         if (roomId) {
             socket.join(roomId);
-            console.log(`🔹 User ${userId} also joined room: ${roomId}`);
+            console.log(`🔹 User ${socket.id} joined room: ${roomId}`);
         }
 
-        // ✅ Send a welcome message to the user
-        socket.emit("privateMessage", {
-            text: "Welcome to your private room!",
-            joinedRooms: Array.from(socket.rooms), // Convert Set to array
-            socketId: socket.id
-        });
+        // Send a welcome message to the connected user
+        socket.emit("message", { text: "Welcome to Imrabo Socket!", socketId: socket.id });
 
-        // ✅ Handle private messages within a room
-        socket.on("privateMessage", ({ roomId, message }) => {
+        // Handle incoming messages
+        socket.on("message", ({ roomId, message }) => {
             if (!roomId || !message) return;
-            console.log(`📩 Message from ${userId} to room ${roomId}: ${message}`);
-            imraboNamespace.to(roomId).emit("privateMessage", { sender: userId, message });
+            console.log(`📩 Message to ${roomId}: ${message}`);
+            namespace.to(roomId).emit("message", { sender: socket.id, message });
         });
 
-        // ✅ Dynamically join another private room
-        socket.on("joinRoom", (newRoomId) => {
-            if (!newRoomId) return;
-            console.log(`🔐 User ${userId} joining room: ${newRoomId}`);
-            socket.join(newRoomId);
-            socket.emit("roomJoined", { roomId: newRoomId, message: `You joined ${newRoomId}` });
+        // Join a room
+        socket.on("joinRoom", (roomId) => {
+            if (!roomId) return;
+            socket.join(roomId);
+            console.log(`🔹 User ${socket.id} joined room: ${roomId}`);
+            socket.emit("roomJoined", { roomId, message: `Joined room ${roomId}` });
         });
 
-        // ✅ Leave a room
+        // Leave a room
         socket.on("leaveRoom", (roomId) => {
             if (!roomId) return;
-            console.log(`🚪 User ${userId} leaving room: ${roomId}`);
             socket.leave(roomId);
-            socket.emit("roomLeft", { roomId, message: `You left ${roomId}` });
+            console.log(`🚪 User ${socket.id} left room: ${roomId}`);
+            socket.emit("roomLeft", { roomId, message: `Left room ${roomId}` });
         });
 
-        // ✅ Handle disconnection
+        // Handle disconnection
         socket.on("disconnect", () => {
-            console.log(`❌ User ${userId} disconnected.`);
+            console.log(`❌ User disconnected: ${socket.id}`);
         });
     });
 }

@@ -1,20 +1,48 @@
-"use client"
+"use client";
 
-import { GithubIcon, SunIcon, MoonIcon, SearchIcon, UserIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
-
+import { GithubIcon, SunIcon, MoonIcon, SearchIcon, UserIcon } from "lucide-react";
 import Footer05Page from "@/components/custom/dashboard/footer";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Check auth on mount
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      router.push("/log-in"); // Redirect if no token
+    } else {
+      setLoading(false);
+    }
+
+    // Load dark mode preference from localStorage
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    }
+  }, [router]);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+    document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDarkMode ? "light" : "dark");
+  };
+
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
   return (
     <>
+      {/* Navbar */}
       <div className="border-b-2 border-gray-100">
-        <header className="flex justify-between items-center p-2  bg-white dark:bg-gray-900 flex-wrap md:flex-nowrap lg:mx-16">
-          {/* Left Side: Logo & Navigation */}
+        <header className="flex justify-between items-center p-2 bg-white dark:bg-gray-900 flex-wrap md:flex-nowrap lg:mx-16">
+          {/* Left: Logo & Nav */}
           <div className="flex items-center space-x-4 md:space-x-6 w-full md:w-auto justify-between md:justify-start">
             <div className="flex items-center space-x-2">
               <GithubIcon className="h-6 w-6" />
@@ -34,9 +62,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </nav>
           </div>
 
-          {/* Right Side: Search, Theme Toggle, Avatar */}
+          {/* Right: Search, Theme, Avatar */}
           <div className="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end mt-4 md:mt-0">
-            {/* Search Bar */}
+            {/* Search */}
             <div className="relative w-full lg:w-auto lg:block hidden">
               <input
                 type="text"
@@ -45,10 +73,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               />
               <SearchIcon className="absolute right-3 top-2.5 h-4 w-4 text-gray-400" />
             </div>
-            <Button variant='ghost' size='icon' className="lg:hidden"><SearchIcon className=" h-4 w-4 text-gray-400 " /></Button>
+            <Button variant="ghost" size="icon" className="lg:hidden">
+              <SearchIcon className="h-4 w-4 text-gray-400" />
+            </Button>
 
             {/* Theme Toggle */}
-            <Button variant="ghost" size="icon" onClick={() => setIsDarkMode(!isDarkMode)}>
+            <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {isDarkMode ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
             </Button>
 
@@ -60,24 +90,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
       </div>
 
+      {/* Main Content */}
       <main className="mx-8 lg:mx-14 my-6">{children}</main>
+
+      {/* Footer */}
       <footer className="w-full bg-white dark:bg-gray-900">
         <div className="max-w-screen-xl mx-auto px-6 xl:px-0">
           <div className="py-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-5">
             <span className="text-muted-foreground text-sm">
               &copy; {new Date().getFullYear()}{" "}
-              
               Created By
               <Link href="/" passHref>
-                <Button variant='link' rel="noopener noreferrer" className="hover:underline">
-                @iamprathameshmore
+                <Button variant="link" rel="noopener noreferrer" className="hover:underline">
+                  @iamprathameshmore
                 </Button>
               </Link>{" "}
             </span>
           </div>
         </div>
       </footer>
-
     </>
   );
 }
