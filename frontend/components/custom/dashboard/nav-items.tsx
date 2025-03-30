@@ -1,6 +1,8 @@
 "use client"
 
-import { type LucideIcon } from "lucide-react";
+import {
+  type LucideIcon,
+} from "lucide-react";
 
 import {
   SidebarGroup,
@@ -8,34 +10,32 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavMain({
+export function TeamSwitcher({
   title,
   items,
 }: {
-  title:string,
+  title: string;
   items: {
-    title: string;
+    name: string;
     url: string;
-    icon?: LucideIcon;
-    isActive?: boolean;
-    items?: {
-      title: string;
-      url: string;
-    }[];
+    icon: LucideIcon;
   }[];
 }) {
+  const { isMobile } = useSidebar();
+
   return (
-    <SidebarGroup>
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>{title}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <SidebarMenuItem key={item.title}>
+          <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <a href={item.url} className="flex items-center gap-2">
-                {item.icon && <item.icon className="w-5 h-5" />}
-                <span>{item.title}</span>
+                <item.icon className="w-5 h-5" />
+                <span>{item.name}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

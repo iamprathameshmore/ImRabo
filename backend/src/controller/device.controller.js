@@ -4,10 +4,13 @@ import { validationResult } from "express-validator";
 // 📌 1️⃣ Create (POST) Device
 export async function postDeviceController(req, res) {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    console.log(errors)
+    if (!errors.isEmpty()) return res.status(402).json({ errors: errors.array() });
 
     const { deviceName, deviceType } = req.body;
+    console.log(deviceType, deviceName)
     const userId = req.userId; // Extracted from JWT middleware
+    console.log(userId)
 
     try {
         const existingDevice = await DeviceModel.findOne({ userId, deviceName });

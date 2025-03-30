@@ -1,25 +1,54 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
+import { AppSidebar } from "@/components/custom/dashboard/side-bar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { GithubIcon, SunIcon, MoonIcon, SearchIcon, UserIcon, LogOutIcon, SettingsIcon, BellIcon } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  BellIcon,
+  Search,
+  Sun,
+  Moon,
+  UserCircleIcon,
+  CreditCardIcon,
+  LogOutIcon,
+  MoonIcon,
+  SunIcon,
+  Settings,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState<number>(3); // Example notification count
+  const [notifications, setNotifications] = useState(3); // Example notifications count
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      router.replace("/log-in");
-      return;
-    }
-
+    // const token = sessionStorage.getItem("token");
+    // if (!token) {
+    //   router.replace("/log-in");
+    //   return;
+    // }
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -28,7 +57,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       document.documentElement.classList.remove("dark");
       setIsDarkMode(false);
     }
-
     setLoading(false);
   }, [router]);
 
@@ -45,49 +73,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.replace("/log-in");
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  // if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+
+  const pathSegments = pathname.split("/").filter((segment) => segment);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white dark:bg-black text-black dark:text-white">
-      <header className="border-b-2 border-blue-500 bg-white dark:bg-black">
-        <div className="flex justify-between items-center p-4 flex-wrap md:flex-nowrap lg:mx-16">
-          <div className="flex items-center space-x-4 md:space-x-6 w-full md:w-auto justify-between md:justify-start">
-            <div className="flex items-center space-x-2">
-              <GithubIcon className="h-6 w-6 text-blue-500" />
-              <h1 className="text-xl font-semibold">Imrabo</h1>
-            </div>
-            <nav className="hidden md:flex space-x-4 text-sm font-medium text-black dark:text-white">
-              {[
-                { title: "Home", href: "/dashboard" },
-                { title: "Automation", href: "/dashboard/automation" },
-                { title: "Devices", href: "/dashboard/devices" },
-                { title: "Integration", href: "/dashboard/integration" },
-              ].map(({ title, href }) => (
-                <Link key={href} href={href} className="hover:text-blue-500">
-                  {title}
-                </Link>
-              ))}
-            </nav>
+    <SidebarProvider className="rounded">
+      <AppSidebar/>
+      <SidebarInset className="rounded">
+        <header className="flex h-16 shrink-0 items-center justify-between px-4 border-b border-gray-300 dark:border-gray-700">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger />
+            <Breadcrumb className="hidden md:block">
+              <BreadcrumbList>
+                {pathSegments.map((segment, index) => {
+                  const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
+                  const isLast = index === pathSegments.length - 1;
+                  const formattedSegment = segment.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+                  return (
+                    <BreadcrumbItem key={href}>
+                      {isLast ? (
+                        <BreadcrumbPage>{formattedSegment}</BreadcrumbPage>
+                      ) : (
+                        <>
+                          <BreadcrumbLink href={href}>{formattedSegment}</BreadcrumbLink>
+                          <BreadcrumbSeparator />
+                        </>
+                      )}
+                    </BreadcrumbItem>
+                  );
+                })}
+              </BreadcrumbList>
+            </Breadcrumb>
           </div>
-
-          <div className="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end mt-4 md:mt-0">
-            <div className="relative w-full lg:w-auto hidden lg:block">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="px-3 py-2 w-full md:w-60 rounded-lg border border-blue-500 bg-white dark:bg-black text-black dark:text-white"
-              />
-              <SearchIcon className="absolute right-3 top-2.5 h-4 w-4 text-blue-500" />
-            </div>
-            <Button variant="ghost" size="icon" className="lg:hidden">
-              <SearchIcon className="h-4 w-4 text-blue-500" />
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="icon">
+              <Search className="h-5 w-5" />
             </Button>
-
-            {/* Notification Icon */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
-                  <BellIcon className="h-5 w-5 text-blue-500" />
+                  <BellIcon className="h-5 w-5" />
                   {notifications > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
                       {notifications}
@@ -95,66 +121,59 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-black border border-blue-500">
-                <DropdownMenuItem>
-                  <span className="text-black dark:text-white">New Alert: Device Offline</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span className="text-black dark:text-white">Automation Updated</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span className="text-black dark:text-white">Integration Successful</span>
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem>New Alert: Device Offline</DropdownMenuItem>
+                <DropdownMenuItem>Automation Updated</DropdownMenuItem>
+                <DropdownMenuItem>Integration Successful</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
 
-            {/* Theme Toggle */}
-            <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            >
               {isDarkMode ? <SunIcon className="h-5 w-5 text-blue-500" /> : <MoonIcon className="h-5 w-5 text-blue-500" />}
-            </Button>
 
-            {/* User Dropdown */}
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <UserIcon className="h-6 w-6 text-blue-500" />
+                  <UserCircleIcon className="h-6 w-6" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-black border border-blue-500">
-                <DropdownMenuItem>
-                  <Link href="/profile" className="flex items-center space-x-2 w-full text-black dark:text-white">
-                    <UserIcon className="w-4 h-4 text-blue-500" />
-                    <span>Profile</span>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuGroup>
+                <Link href={'/dashboard/profile'}>
+                  <DropdownMenuItem>
+                    <UserCircleIcon /> Profile
+                  </DropdownMenuItem>
                   </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href="/settings" className="flex items-center space-x-2 w-full text-black dark:text-white">
-                    <SettingsIcon className="w-4 h-4 text-blue-500" />
-                    <span>Settings</span>
+                <Link href={'/dashboard/settings'}>
+                  <DropdownMenuItem>
+                    <Settings /> Settings
+                  </DropdownMenuItem>
                   </Link>
-                </DropdownMenuItem>
+                  
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-red-500">
-                  <LogOutIcon className="w-4 h-4 text-blue-500" />
-                  <span>Logout</span>
+                  <LogOutIcon /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </div>
-      </header>
-      <main className="flex-1 mx-8 lg:mx-14 my-6">{children}</main>
-      <footer className="w-full bg-white dark:bg-black py-6">
-        <div className="max-w-screen-xl mx-auto px-6 xl:px-0 text-center">
+        </header>
+        <main className="flex flex-col flex-1 p-6">{children}</main>
+        <footer className="w-full  dark:bg-black py-6 text-center">
           <span className="text-sm">
             &copy; {new Date().getFullYear()} Created By
-            <Link href="/" passHref>
-              <Button variant="link" rel="noopener noreferrer" className="hover:underline text-blue-500">
-                @iamprathameshmore
-              </Button>
+            <Link href="/">
+              <Button variant="link" className="hover:underline text-blue-500">@iamprathameshmore</Button>
             </Link>
           </span>
-        </div>
-      </footer>
-    </div>
+        </footer>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

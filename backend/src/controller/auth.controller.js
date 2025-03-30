@@ -44,7 +44,7 @@ export const signUpAuthController = async (req, res) => {
   }
 };
 
-// ✅ OTP Verification
+
 export const verificationAuthController = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -56,30 +56,31 @@ export const verificationAuthController = async (req, res) => {
   try {
     const user = await UserModel.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: 'User not found' });
+      return res.status(400).json({ msg: "User not found" });
     }
 
     // Check if OTP is correct
     const isOtpValid = await bcrypt.compare(otp, user.secret);
     if (!isOtpValid) {
-      return res.status(400).json({ msg: 'Invalid OTP' });
+      return res.status(400).json({ msg: "Invalid OTP" });
     }
 
     // ✅ Mark user as verified
-    await UserModel.updateOne({ email });
+    await UserModel.updateOne({ email }, { $set: { isVerified: true } });
 
     // ✅ Generate JWT token
     const token = jwt.sign(
       { userId: user._id, email },
-      process.env.JWT_SECRET, 
-      { expiresIn: '7d' } 
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
 
-    res.status(200).json({ msg: 'Login successful', token });
+    // ✅ Send token in response body
+    res.status(200).json({ msg: "Login successful", token });
 
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Internal server error' });
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 

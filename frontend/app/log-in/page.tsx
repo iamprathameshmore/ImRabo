@@ -30,13 +30,15 @@ export default function Page() {
 
 
     try {
-      const response = await fetch(`${process.env.API_URL}/auth/log-in`, {
+      const response = await fetch(`http://localhost:4213/auth/log-in`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
+
+      console.log(data)
 
       if (response.ok) {
         toast.success("OTP sent! Please verify your email.");

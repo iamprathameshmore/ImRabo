@@ -33,7 +33,7 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.API_URL}/auth/sign-up`, {
+      const response = await fetch(`http://localhost:4213/auth/sign-up`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email }),

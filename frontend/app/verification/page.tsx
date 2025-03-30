@@ -38,7 +38,7 @@ export default function VerifyPage() {
         setLoading(true);
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+            const response = await fetch(`http://localhost:4213/auth/verify`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, otp }),
@@ -47,12 +47,18 @@ export default function VerifyPage() {
             const data = await response.json();
 
             if (response.ok) {
-               toast.success("✅ Login successful!");
-                sessionStorage.setItem("token", data.token); // Store JWT token
-                sessionStorage.removeItem("email"); // Remove email after successful login
-                router.push("/dashboard"); // Redirect to dashboard
+                toast.success("✅ Login successful!");
+    
+                // ✅ Store token in sessionStorage (or localStorage)
+                sessionStorage.setItem("token", data.token);
+    
+                // Remove email after successful login
+                sessionStorage.removeItem("email");
+    
+                // Redirect to dashboard
+                router.push("/dashboard");
             } else {
-               toast.error(data.msg || "Invalid OTP. Try again.");
+                toast.error(data.msg || "Invalid OTP. Try again.");
             }
         } catch (error) {
            toast.error("❌ Something went wrong.");

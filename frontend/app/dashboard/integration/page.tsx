@@ -2,15 +2,20 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { IntegrationModal } from "@/components/custom/dashboard/IntegrationModal";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Pencil, Trash, Eye, PlusCircle } from "lucide-react";
+import { IntegrationModal } from "@/components/custom/dashboard/IntegrationModal";
+import { Pencil, Trash, Eye, PlusCircle, Link } from "lucide-react";
 
-export default function IntegrationTable() {
+export default function IntegrationGrid() {
   const [integrations, setIntegrations] = useState([
-    { name: "Google Home", apiKey: "1234-5678-9101-1121", description: "Syncs with smart devices" },
+    { name: "Google Home", icon: "🏠", apiKey: "1234-5678-9101-1121", description: "Syncs with smart devices" },
   ]);
+
+  const platformIntegrations = [
+    { name: "Amazon Alexa", icon: "🎤", apiKey: "N/A", description: "Voice-controlled smart home" },
+    { name: "Apple HomeKit", icon: "🍏", apiKey: "N/A", description: "Apple ecosystem integration" },
+  ];
 
   const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
   const [modalType, setModalType] = useState<"add" | "edit" | "delete" | "view" | null>(null);
@@ -36,54 +41,73 @@ export default function IntegrationTable() {
 
   return (
     <div className="space-y-6 md:p-6">
-      {/* Header Section */}
+      {/* Header */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Integration Management</h1>
-        <p className="text-gray-600">Manage and configure your third-party integrations.</p>
+        <p className="text-gray-600">Manage and configure your integrations.</p>
       </div>
 
-      {/* Actions Section */}
-      <div className="flex justify-end items-center mb-4">
+      {/* Your Integrations */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold">Your Integrations</h2>
         <Button onClick={() => setModalType("add")} className="flex items-center gap-2">
           <PlusCircle className="w-4 h-4" /> Add Integration
         </Button>
       </div>
 
-      {/* Table Section */}
-      <div className="border rounded-md overflow-hidden">
-        <Table>
-          <TableHeader>
-            <TableRow className="bg-gray-100 dark:bg-gray-800">
-              <TableHead className="w-1/3">Integration Name</TableHead>
-              <TableHead>API Key</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {integrations.map((integration, index) => (
-              <TableRow key={index} className="hover:bg-gray-50 dark:hover:bg-gray-900">
-                <TableCell className="font-medium">{integration.name}</TableCell>
-                <TableCell>{integration.apiKey.replace(/.(?=.{4})/g, "*")}</TableCell>
-                <TableCell>{integration.description}</TableCell>
-                <TableCell className="text-right space-x-2">
-                  <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("view"); }}>
-                    <Eye className="w-4 h-4 text-blue-500" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("edit"); }}>
-                    <Pencil className="w-4 h-4 text-green-500" />
-                  </Button>
-                  <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("delete"); }}>
-                    <Trash className="w-4 h-4 text-red-500" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {integrations.map((integration, index) => (
+          <Card key={index} className="p-4 border shadow-sm hover:shadow-md transition">
+            <CardHeader className="flex items-center gap-3">
+              <span className="text-xl">{integration.icon}</span>
+              <h3 className="font-medium">{integration.name}</h3>
+            </CardHeader>
+            <CardContent className="text-sm text-gray-600">{integration.description}</CardContent>
+            <CardFooter className="flex justify-between items-center">
+              <span className="text-xs text-gray-500">
+                {integration.apiKey === "N/A"
+                  ? "No API Key Required"
+                  : integration.apiKey.replace(/.(?=.{4})/g, "*")}
+              </span>
+              <div className="flex gap-2">
+                <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("view"); }}>
+                  <Eye className="w-4 h-4 text-blue-500" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("edit"); }}>
+                  <Pencil className="w-4 h-4 text-green-500" />
+                </Button>
+                <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("delete"); }}>
+                  <Trash className="w-4 h-4 text-red-500" />
+                </Button>
+              </div>
+            </CardFooter>
+          </Card>
+        ))}
       </div>
 
-      {/* Add/Edit Integration Modal */}
+      {/* Platform Integrations */}
+      <div className="mt-8">
+        <h2 className="text-lg font-semibold">Platform Integrations</h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {platformIntegrations.map((integration, index) => (
+          <Card key={index} className="p-4 border shadow-sm hover:shadow-md transition">
+            <CardHeader className="flex items-center gap-3">
+              <span className="text-xl">{integration.icon}</span>
+              <h3 className="font-medium">{integration.name}</h3>
+            </CardHeader>
+            <CardContent className="text-sm text-gray-600">{integration.description}</CardContent>
+            <CardFooter>
+              <Button variant="outline" className="w-full flex items-center gap-2">
+                <Link className="w-4 h-4" /> Connect
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      {/* Modals */}
       {modalType && (modalType === "add" || modalType === "edit") && (
         <IntegrationModal
           onAdd={handleSaveIntegration}
@@ -93,7 +117,6 @@ export default function IntegrationTable() {
         />
       )}
 
-      {/* View Integration Details Modal */}
       {modalType === "view" && selectedIntegration && (
         <Dialog open onOpenChange={() => setModalType(null)}>
           <DialogContent className="sm:max-w-[500px]">
@@ -112,7 +135,6 @@ export default function IntegrationTable() {
         </Dialog>
       )}
 
-      {/* Delete Confirmation Modal */}
       {modalType === "delete" && selectedIntegration && (
         <Dialog open onOpenChange={() => setModalType(null)}>
           <DialogContent className="sm:max-w-[400px]">
