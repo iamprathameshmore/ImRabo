@@ -16,20 +16,13 @@ const integrationRouter = express.Router();
 
 
 // 📌 Create Integration
-integrationRouter.post(
-  "/",
-
-  validateCreateIntegration,
-  postIntegrationController
-);
+integrationRouter.post("/", validateCreateIntegration, postIntegrationController );
 
 // 📌 Get All Integrations
 integrationRouter.get("/get", getIntegrationsController);
 
 // 📌 Get Integration by ID
-integrationRouter.get(
-  "/get/:Id",validateIntegrationId,
-  getIntegrationByIdController
+integrationRouter.get("/get/:Id",validateIntegrationId,getIntegrationByIdController
 );
 
 // 📌 Update Integration

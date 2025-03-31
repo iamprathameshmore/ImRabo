@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
-async function connectDB(url) {
-  if (url) throw new Error("MongoDB URI is not defined!");
+async function connectDB() {
+ 
   try {
-    await mongoose.connect(url);
+    await mongoose.connect(process.env.MONGODB_URL);
+    console.log(`Mongodb Connected`)
     return mongoose.connection.readyState; // 1 = connected
   } catch (error) {
     console.error("❌ MongoDB connection error:", error);
