@@ -17,7 +17,7 @@ export default function DeviceTable() {
 
   const fetchDevices = async () => {
     try {
-      const response = await fetch(`${API_URL}/list`);
+      const response = await fetch(`https://imrabo.onrender.com/devices`);
       const data = await response.json();
       setDevices(data);
     } catch (error) {

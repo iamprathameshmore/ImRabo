@@ -1,78 +1,113 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { IntegrationModal } from "@/components/custom/dashboard/IntegrationModal";
-import { Pencil, Trash, Eye, PlusCircle, Link } from "lucide-react";
+import { Pencil, Trash, Eye, PlusCircle } from "lucide-react";
+
+interface Integration {
+  _id: string;
+  integrationName: string;
+  apiKey: string;
+  type: string;
+}
 
 export default function IntegrationGrid() {
-  const [integrations, setIntegrations] = useState([
-    { name: "Google Home", icon: "🏠", apiKey: "1234-5678-9101-1121", description: "Syncs with smart devices" },
-  ]);
+  const [integrations, setIntegrations] = useState<Integration[]>([]);
+  const [selectedIntegration, setSelectedIntegration] = useState<Integration | null>(null);
+  const [modalType, setModalType] = useState<string | null>(null);
 
-  const platformIntegrations = [
-    { name: "Amazon Alexa", icon: "🎤", apiKey: "N/A", description: "Voice-controlled smart home" },
-    { name: "Apple HomeKit", icon: "🍏", apiKey: "N/A", description: "Apple ecosystem integration" },
-  ];
+  useEffect(() => {
+    fetchIntegrations();
+  }, []);
 
-  const [selectedIntegration, setSelectedIntegration] = useState<any>(null);
-  const [modalType, setModalType] = useState<"add" | "edit" | "delete" | "view" | null>(null);
+  const fetchIntegrations = async () => {
+    try {
+      const response = await fetch("https://imrabo.onrender.com/integration/get", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
 
-  const handleSaveIntegration = (integration: any) => {
-    setIntegrations((prev) => {
-      const existingIndex = prev.findIndex((i) => i.name === integration.name);
-      if (existingIndex !== -1) {
-        const updatedIntegrations = [...prev];
-        updatedIntegrations[existingIndex] = integration;
-        return updatedIntegrations;
-      } else {
-        return [...prev, integration];
-      }
-    });
-    setModalType(null);
+      if (!response.ok) throw new Error("Failed to fetch integrations");
+      const data = await response.json();
+      setIntegrations(data.integrations);
+    } catch (error) {
+      console.error("Error fetching integrations:", error);
+    }
   };
 
-  const handleDeleteIntegration = () => {
-    setIntegrations((prev) => prev.filter((i) => i.name !== selectedIntegration?.name));
-    setModalType(null);
+  const handleSaveIntegration = async (integration: Integration) => {
+    try {
+      const url = integration._id
+        ? `https://imrabo.onrender.com/integration/${integration._id}`
+        : "https://imrabo.onrender.com/integration";
+
+      const method = integration._id ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(integration),
+      });
+
+      if (!response.ok) throw new Error(`Failed to ${integration._id ? "update" : "save"} integration`);
+      await fetchIntegrations();
+      setModalType(null);
+    } catch (error) {
+      console.error(`Error ${integration._id ? "updating" : "saving"} integration:`, error);
+    }
+  };
+
+  const handleDeleteIntegration = async () => {
+    try {
+      if (!selectedIntegration) return;
+      const response = await fetch(`https://imrabo.onrender.com/integration/${selectedIntegration._id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to delete integration");
+      await fetchIntegrations();
+      setModalType(null);
+    } catch (error) {
+      console.error("Error deleting integration:", error);
+    }
   };
 
   return (
     <div className="space-y-6 md:p-6">
-      {/* Header */}
       <div className="mb-4">
         <h1 className="text-2xl font-bold">Integration Management</h1>
         <p className="text-gray-600">Manage and configure your integrations.</p>
       </div>
 
-      {/* Your Integrations */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Your Integrations</h2>
-        <Button onClick={() => setModalType("add")} className="flex items-center gap-2">
-          <PlusCircle className="w-4 h-4" /> Add Integration
-        </Button>
-      </div>
+      <Button onClick={() => setModalType("add")} className="flex items-center gap-2">
+        <PlusCircle className="w-4 h-4" /> Add Integration
+      </Button>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {integrations.map((integration, index) => (
-          <Card key={index} className="p-4 border shadow-sm hover:shadow-md transition">
-            <CardHeader className="flex items-center gap-3">
-              <span className="text-xl">{integration.icon}</span>
-              <h3 className="font-medium">{integration.name}</h3>
+        {integrations.map((integration) => (
+          <Card key={integration._id} className="p-4 border shadow-sm hover:shadow-md transition">
+            <CardHeader>
+              <h3 className="font-medium">{integration.integrationName}</h3>
             </CardHeader>
-            <CardContent className="text-sm text-gray-600">{integration.description}</CardContent>
+            <CardContent className="text-sm text-gray-600">
+              <span className="font-semibold">Type:</span> {integration.type}
+            </CardContent>
             <CardFooter className="flex justify-between items-center">
               <span className="text-xs text-gray-500">
-                {integration.apiKey === "N/A"
-                  ? "No API Key Required"
-                  : integration.apiKey.replace(/.(?=.{4})/g, "*")}
+                {integration.apiKey ? integration.apiKey.replace(/.(?=.{4})/g, "*") : "No API Key"}
               </span>
               <div className="flex gap-2">
-                <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("view"); }}>
-                  <Eye className="w-4 h-4 text-blue-500" />
-                </Button>
                 <Button size="icon" variant="ghost" onClick={() => { setSelectedIntegration(integration); setModalType("edit"); }}>
                   <Pencil className="w-4 h-4 text-green-500" />
                 </Button>
@@ -85,54 +120,13 @@ export default function IntegrationGrid() {
         ))}
       </div>
 
-      {/* Platform Integrations */}
-      <div className="mt-8">
-        <h2 className="text-lg font-semibold">Platform Integrations</h2>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {platformIntegrations.map((integration, index) => (
-          <Card key={index} className="p-4 border shadow-sm hover:shadow-md transition">
-            <CardHeader className="flex items-center gap-3">
-              <span className="text-xl">{integration.icon}</span>
-              <h3 className="font-medium">{integration.name}</h3>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-600">{integration.description}</CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full flex items-center gap-2">
-                <Link className="w-4 h-4" /> Connect
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {/* Modals */}
       {modalType && (modalType === "add" || modalType === "edit") && (
         <IntegrationModal
-          onAdd={handleSaveIntegration}
-          initialData={modalType === "edit" ? selectedIntegration : undefined}
           isEdit={modalType === "edit"}
+          initialData={modalType === "edit" ? selectedIntegration : undefined}
+          onSave={handleSaveIntegration}
           onClose={() => setModalType(null)}
         />
-      )}
-
-      {modalType === "view" && selectedIntegration && (
-        <Dialog open onOpenChange={() => setModalType(null)}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Integration Details</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-2">
-              <p><b>Name:</b> {selectedIntegration.name}</p>
-              <p><b>API Key:</b> {selectedIntegration.apiKey}</p>
-              <p><b>Description:</b> {selectedIntegration.description}</p>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setModalType(null)}>Close</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       )}
 
       {modalType === "delete" && selectedIntegration && (
@@ -141,7 +135,7 @@ export default function IntegrationGrid() {
             <DialogHeader>
               <DialogTitle>Confirm Deletion</DialogTitle>
             </DialogHeader>
-            <p>Are you sure you want to delete <b>{selectedIntegration?.name}</b>?</p>
+            <p>Are you sure you want to delete <b>{selectedIntegration.integrationName}</b>?</p>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setModalType(null)}>Cancel</Button>
               <Button variant="destructive" onClick={handleDeleteIntegration}>Delete</Button>

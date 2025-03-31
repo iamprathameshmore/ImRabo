@@ -44,11 +44,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [notifications, setNotifications] = useState(3); // Example notifications count
 
   useEffect(() => {
-    // const token = sessionStorage.getItem("token");
-    // if (!token) {
-    //   router.replace("/log-in");
-    //   return;
-    // }
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      router.replace("/log-in");
+      return;
+    }
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.replace("/log-in");
   };
 
-  // if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
   const pathSegments = pathname.split("/").filter((segment) => segment);
 

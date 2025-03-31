@@ -38,9 +38,9 @@ export default function VerifyPage() {
         setLoading(true);
 
         try {
-            const response = await fetch(`http://localhost:4213/auth/verify`, {
+            const response = await fetch(`https://imrabo.onrender.com/auth/verify`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json" ,},
                 body: JSON.stringify({ email, otp }),
             });
 

@@ -1,77 +1,80 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+
+interface Integration {
+  _id?: string;
+  integrationName: string;
+  apiKey: string;
+  type: string;
+}
 
 interface IntegrationModalProps {
-  onAdd: (integration: any) => void;
-  initialData?: any;
-  isEdit?: boolean;
+  isEdit: boolean;
+  initialData?: Integration;
+  onSave: (integration: Integration) => void;
   onClose: () => void;
 }
 
-export function IntegrationModal({ onAdd, initialData, isEdit = false, onClose }: IntegrationModalProps) {
-  const [integration, setIntegration] = useState({ name: "", apiKey: "", description: "" });
+export function IntegrationModal({ isEdit, initialData, onSave, onClose }: IntegrationModalProps) {
+  const [integrationName, setIntegrationName] = useState(initialData?.integrationName || "");
+  const [apiKey, setApiKey] = useState(initialData?.apiKey || "");
+  const [type, setType] = useState(initialData?.type || "");
+
+  const integrationTypes = ['API', 'Webhook', 'MQTT', 'iPaaS', 'Other'];
 
   useEffect(() => {
     if (initialData) {
-      setIntegration(initialData);
+      setIntegrationName(initialData.integrationName);
+      setApiKey(initialData.apiKey);
+      setType(initialData.type);
     }
   }, [initialData]);
 
-  const handleSave = () => {
-    onAdd(integration);
+  const handleSubmit = () => {
+    if (!integrationName || !apiKey || !type) return;
+    onSave({ ...initialData, integrationName, apiKey, type });
     onClose();
   };
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? "Edit Integration" : "Add Integration"}</DialogTitle>
-          <DialogDescription>{isEdit ? "Modify integration details." : "Enter integration details."}</DialogDescription>
         </DialogHeader>
-
         <div className="space-y-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="integration-name" className="text-right">Name</Label>
-            <Input
-              id="integration-name"
-              placeholder="Enter integration name"
-              value={integration.name}
-              onChange={(e) => setIntegration({ ...integration, name: e.target.value })}
-              className="col-span-3"
-            />
+          <div>
+            <Label>Integration Name</Label>
+            <Input value={integrationName} onChange={(e) => setIntegrationName(e.target.value)} />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="integration-api" className="text-right">API Key</Label>
-            <Input
-              id="integration-api"
-              type="password"
-              placeholder="Enter API Key"
-              value={integration.apiKey}
-              onChange={(e) => setIntegration({ ...integration, apiKey: e.target.value })}
-              className="col-span-3"
-            />
+          <div>
+            <Label>API Key</Label>
+            <Input value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
           </div>
-          <div className="grid grid-cols-4 items-start gap-4">
-            <Label htmlFor="integration-description" className="text-right">Description</Label>
-            <Textarea
-              id="integration-description"
-              placeholder="Enter details..."
-              value={integration.description}
-              onChange={(e) => setIntegration({ ...integration, description: e.target.value })}
-              className="col-span-3"
-            />
+          <div>
+            <Label>Type</Label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Select Type</option>
+              {integrationTypes.map((typeOption) => (
+                <option key={typeOption} value={typeOption}>
+                  {typeOption}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
-
         <DialogFooter>
-          <Button onClick={handleSave}>{isEdit ? "Save Changes" : "Add Integration"}</Button>
+          <Button variant="ghost" onClick={onClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>{isEdit ? "Update" : "Add"}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

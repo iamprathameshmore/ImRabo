@@ -30,7 +30,7 @@ export default function DeviceCards() {
   useEffect(() => {
     const fetchDevices = async () => {
       try {
-        const response = await fetch("http://localhost:4213/device", {
+        const response = await fetch("https://imrabo.onrender.com/device", {
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
@@ -63,7 +63,7 @@ export default function DeviceCards() {
 
       const method = selectedDevice ? "PUT" : "POST";
       const response = await fetch(
-        `http://localhost:4213/device${selectedDevice ? `/${selectedDevice.id}` : ""}`,
+        `https://imrabo.onrender.com/device${selectedDevice ? `/${selectedDevice.id}` : ""}`,
         {
           method,
           headers: {
@@ -98,7 +98,7 @@ export default function DeviceCards() {
   const handleDeleteDevice = async () => {
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:4213/device/${selectedDevice?.id}`, {
+      const response = await fetch(`https://imrabo.onrender.com/device/${selectedDevice?.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
