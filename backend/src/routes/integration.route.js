@@ -24,13 +24,11 @@ integrationRouter.post(
 );
 
 // 📌 Get All Integrations
-integrationRouter.get("/", getIntegrationsController);
+integrationRouter.get("/get", getIntegrationsController);
 
 // 📌 Get Integration by ID
 integrationRouter.get(
-  "/:integrationId",
-
-  validateIntegrationId,
+  "/get/:Id",validateIntegrationId,
   getIntegrationByIdController
 );
 

@@ -2,11 +2,12 @@ import AutomationModel from "../model/automation.model.js";
 import UserModel from "../model/user.model.js";
 import { validationResult } from "express-validator";
 
+// 📌 Create (POST) Automation
 export async function postAutomationController(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { automationName, triggerEvent, actions } = req.body;
+  const { automationName, conditions, actions, isEnabled } = req.body;
   const userId = req.userId; // Extracted from JWT middleware
 
   try {
@@ -14,13 +15,13 @@ export async function postAutomationController(req, res) {
     if (!user) return res.status(404).json({ msg: "User not found" });
 
     // Check for duplicate automation
-    const existingAutomation = await AutomationModel.findOne({ userId, automationName, triggerEvent });
-    if (existingAutomation) return res.status(400).json({ msg: "Automation already exists" });
+    const existingAutomation = await AutomationModel.findOne({ userId, automationName });
+    if (existingAutomation) return res.status(400).json({ msg: "Automation with this name already exists" });
 
     // Create and save automation
-    const newAutomation = await AutomationModel.create({ userId, automationName, triggerEvent, actions });
+    const newAutomation = await AutomationModel.create({ userId, automationName, conditions, actions, isEnabled });
 
-    // Push automation reference to user model
+    // Store automation reference in user model
     user.automations.push(newAutomation._id);
     await user.save();
 
@@ -30,8 +31,7 @@ export async function postAutomationController(req, res) {
   }
 }
 
-
-// 📌 Read (GET) Automations
+// 📌 Read (GET) All Automations for a User
 export async function getAutomationsController(req, res) {
   const userId = req.userId;
 
@@ -42,7 +42,6 @@ export async function getAutomationsController(req, res) {
     res.status(500).json({ msg: "Server Error", error: error.message });
   }
 }
-
 
 // 📌 Read (GET) Single Automation by ID
 export async function getAutomationByIdController(req, res) {
@@ -59,28 +58,22 @@ export async function getAutomationByIdController(req, res) {
   }
 }
 
-
 // 📌 Update (PUT) Automation
 export async function putAutomationController(req, res) {
   const userId = req.userId;
   const { automationId } = req.params;
-  const { automationName, triggerEvent, actions, isEnabled } = req.body;
+  const { automationName, conditions, actions, isEnabled } = req.body;
 
   try {
     const automation = await AutomationModel.findOne({ _id: automationId, userId });
     if (!automation) return res.status(404).json({ msg: "Automation not found" });
 
-    // Prevent duplicate automationName & triggerEvent updates
-    const duplicate = await AutomationModel.findOne({
-      userId,
-      automationName,
-      triggerEvent,
-      _id: { $ne: automationId },
-    });
-    if (duplicate) return res.status(400).json({ msg: "Automation with this name and trigger event already exists" });
+    // Prevent duplicate automation name
+    const duplicate = await AutomationModel.findOne({ userId, automationName, _id: { $ne: automationId } });
+    if (duplicate) return res.status(400).json({ msg: "Automation with this name already exists" });
 
     if (automationName) automation.automationName = automationName;
-    if (triggerEvent) automation.triggerEvent = triggerEvent;
+    if (conditions) automation.conditions = conditions;
     if (actions) automation.actions = actions;
     if (typeof isEnabled === "boolean") automation.isEnabled = isEnabled;
 
@@ -90,7 +83,6 @@ export async function putAutomationController(req, res) {
     res.status(500).json({ msg: "Server Error", error: error.message });
   }
 }
-
 
 // 📌 Delete (DELETE) Automation
 export async function deleteAutomationController(req, res) {
@@ -109,4 +101,3 @@ export async function deleteAutomationController(req, res) {
     res.status(500).json({ msg: "Server Error", error: error.message });
   }
 }
-

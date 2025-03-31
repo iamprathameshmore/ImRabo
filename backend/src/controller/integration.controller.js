@@ -6,7 +6,7 @@ export async function postIntegrationController(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-  const { integrationName, apiKey } = req.body;
+  const { integrationName, apiKey, type } = req.body;
   const userId = req.userId; // Extracted from JWT middleware
 
   try {
@@ -16,7 +16,7 @@ export async function postIntegrationController(req, res) {
     const existingIntegration = await IntegrationModel.findOne({ userId, integrationName });
     if (existingIntegration) return res.status(400).json({ msg: "Integration already exists" });
 
-    const newIntegration = await IntegrationModel.create({ userId, integrationName, apiKey });
+    const newIntegration = await IntegrationModel.create({ userId, integrationName, apiKey , type });
 
     // Push integration reference to user model
     user.integrations.push(newIntegration._id);
@@ -45,10 +45,10 @@ export async function getIntegrationsController(req, res) {
 // 📌 Read (GET) Single Integration by ID
 export async function getIntegrationByIdController(req, res) {
   const userId = req.userId;
-  const { integrationId } = req.params;
+  const { Id } = req.params;
 
   try {
-    const integration = await IntegrationModel.findOne({ _id: integrationId, userId });
+    const integration = await IntegrationModel.findOne({ _id: Id, userId });
     if (!integration) return res.status(404).json({ msg: "Integration not found" });
 
     res.json({ integration });

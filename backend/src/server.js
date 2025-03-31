@@ -3,18 +3,11 @@ import connectDB from './config/database.js';
 import app from './app.js';
 import os from "os";
 import http from 'http';
-import { Server } from 'socket.io';
-import setupSocket from './config/socket.js';
 import fetch from "node-fetch"; // ✅ Fix fetch issue
 
 const port = process.env.PORT || 3000;
 
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-    }
-});
 
 // ✅ Health Check API
 app.get("/health", async (req, res) => {
@@ -60,9 +53,7 @@ async function startServer() {
         await connectDB(process.env.MONGODB_URL);
         console.log("✅ Database Connected Successfully");
 
-        // ✅ Initialize WebSocket Logic **After** DB is Connected
-        await setupSocket(io);
-
+    
         server.listen(port, '0.0.0.0', () => 
             console.log(`🚀 Server Started at http://localhost:${port}`)
           );

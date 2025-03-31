@@ -1,23 +1,27 @@
 import DeviceModel from "../model/device.model.js";
+import UserModel from "../model/user.model.js";
 import { validationResult } from "express-validator";
 
 // 📌 1️⃣ Create (POST) Device
 export async function postDeviceController(req, res) {
     const errors = validationResult(req);
-    console.log(errors)
-    if (!errors.isEmpty()) return res.status(402).json({ errors: errors.array() });
+    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
     const { deviceName, deviceType } = req.body;
-    console.log(deviceType, deviceName)
     const userId = req.userId; // Extracted from JWT middleware
-    console.log(userId)
 
     try {
+        const user = await UserModel.findById(userId);
+        if (!user) return res.status(404).json({ msg: "User not found" });
+
         const existingDevice = await DeviceModel.findOne({ userId, deviceName });
         if (existingDevice) return res.status(400).json({ msg: "Device already registered for this user" });
 
-        const newDevice = new DeviceModel({ userId, deviceName, deviceType });
-        await newDevice.save();
+        const newDevice = await DeviceModel.create({ userId, deviceName, deviceType });
+
+        // Store device reference in user model
+        user.devices.push(newDevice._id);
+        await user.save();
 
         res.status(201).json({ msg: "Device added successfully", device: newDevice });
     } catch (error) {
@@ -29,7 +33,7 @@ export async function postDeviceController(req, res) {
 // 📌 2️⃣ Get All Devices (For Logged-in User)
 export async function getDevicesController(req, res) {
     try {
-        const devices = await DeviceModel.find({ userId: req.userId });
+        const devices = await DeviceModel.find({ userId: req.userId }).lean();
         res.status(200).json({ devices });
     } catch (error) {
         console.error("❌ Error in getDevicesController:", error);
@@ -42,7 +46,7 @@ export async function getDeviceByIdController(req, res) {
     const { deviceId } = req.params;
 
     try {
-        const device = await DeviceModel.findOne({ _id: deviceId, userId: req.userId });
+        const device = await DeviceModel.findOne({ _id: deviceId, userId: req.userId }).lean();
         if (!device) return res.status(404).json({ msg: "Device not found" });
 
         res.status(200).json({ device });
@@ -52,8 +56,7 @@ export async function getDeviceByIdController(req, res) {
     }
 }
 
-
-// 📌 5️⃣ Update Device (PUT)
+// 📌 4️⃣ Update Device (PUT)
 export async function updateDeviceController(req, res) {
     const { deviceId } = req.params;
     const { deviceType, isActive, isTrusted } = req.body;
@@ -80,13 +83,16 @@ export async function updateDeviceController(req, res) {
     }
 }
 
-// 📌 6️⃣ Delete Device (DELETE)
+// 📌 5️⃣ Delete Device (DELETE)
 export async function deleteDeviceController(req, res) {
     const { deviceId } = req.params;
 
     try {
         const deletedDevice = await DeviceModel.findOneAndDelete({ _id: deviceId, userId: req.userId });
         if (!deletedDevice) return res.status(404).json({ msg: "Device not found" });
+
+        // Remove device reference from user model
+        await UserModel.findByIdAndUpdate(req.userId, { $pull: { devices: deviceId } });
 
         res.status(200).json({ msg: "Device deleted successfully" });
     } catch (error) {
