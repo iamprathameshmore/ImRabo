@@ -52,6 +52,7 @@ app.get("/health", async (req, res) => {
 // ✅ Start Server After DB Connection is Ready
 async function startServer() {
     try {
+        console.log(process.env.MONGODB_URL);
         await connectDB(process.env.MONGODB_URL);
         console.log("✅ Database Connected Successfully");
 
