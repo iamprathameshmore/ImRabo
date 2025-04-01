@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Head>
-        <link rel="icon" href="/imrabo/logo.png" />
+        <link rel="icon" href='/favicon.png' />
       </Head>
       <body className={`${dmSans.variable} antialiased`}>
         {children}

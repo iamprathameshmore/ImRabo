@@ -73,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     router.replace("/log-in");
   };
 
-  if (loading) return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  if (loading) return <div className="flex justify-center items-center h-screen dark:bg-zinc-800">Loading...</div>;
 
   const pathSegments = pathname.split("/").filter((segment) => segment);
 
@@ -107,7 +107,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon">
+            {/* <Button variant="ghost" size="icon">
               <Search className="h-5 w-5" />
             </Button>
             <DropdownMenu>
@@ -126,7 +126,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <DropdownMenuItem>Automation Updated</DropdownMenuItem>
                 <DropdownMenuItem>Integration Successful</DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
             <Button
               variant="ghost"
               size="icon"
@@ -169,7 +169,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <span className="text-sm">
             &copy; {new Date().getFullYear()} Created By
             <Link href="/">
-              <Button variant="link" className="hover:underline text-blue-500">@iamprathameshmore</Button>
+              <span  className="hover:underline text-blue-500 ml-2">@iamprathameshmore</span>
             </Link>
           </span>
         </footer>

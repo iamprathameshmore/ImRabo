@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { DeviceModal } from "@/components/custom/dashboard/DeviceModal";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Pencil, Trash, PlusCircle, Loader2 } from "lucide-react";
+import { Pencil, Trash, PlusCircle, Loader2, GitPullRequestClosed, Camera, Lightbulb } from "lucide-react";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -157,40 +157,60 @@ export default function DeviceCards() {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {devices.map((device) => (
-            <Card key={device.id} className="p-4 hover:shadow-lg transition cursor-pointer" onClick={() => router.push(`/dashboard/devices/${device.deviceName}`)}>
-              <CardHeader>
-                <h2 className="text-lg font-semibold">{device.deviceName}</h2>
-                <p className="text-sm text-gray-500">{device.deviceType}</p>
-                {device.lastUsed && <p className="text-xs text-gray-400">Last used: {device.lastUsed}</p>}
-              </CardHeader>
-              <CardFooter className="flex justify-end space-x-2">
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedDevice(device);
-                    setIsModalOpen(true);
-                  }}
-                >
-                  <Pencil className="w-4 h-4 text-green-500" />
-                </Button>
-                <Button
-                  size="icon"
-                  variant="ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedDevice(device);
-                    setIsDeleteOpen(true);
-                  }}
-                >
-                  <Trash className="w-4 h-4 text-red-500" />
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+        {devices.map((device) => (
+          <Card
+            key={device.id}
+            className="p-4 hover:shadow-lg transition cursor-pointer bg-white rounded-lg shadow-md"
+            onClick={() => router.push(`/dashboard/devices/${device.deviceName}`)}
+          >
+            <CardHeader className="flex flex-col items-center text-center">
+              {/* Device Icon (based on device type) */}
+              {device.deviceType === 'Sensor' ? (
+                <GitPullRequestClosed className="w-12 h-12 text-blue-500" />
+              ) : device.deviceType === 'Camera' ? (
+                <Camera className="w-12 h-12 text-gray-500" />
+              ) : (
+                <Lightbulb className="w-12 h-12 text-gray-700" />
+              )}
+              
+              <h2 className="text-lg font-semibold mt-2">{device.deviceName}</h2>
+              <p className="text-sm text-gray-500">{device.deviceType}</p>
+              {device.lastUsed && (
+                <p className="text-xs text-gray-400">Last used: {device.lastUsed}</p>
+              )}
+            </CardHeader>
+      
+          
+          
+      
+            <CardFooter className="flex justify-end space-x-2 mt-4">
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedDevice(device);
+                  setIsModalOpen(true);
+                }}
+              >
+                <Pencil className="w-4 h-4 text-green-500" />
+              </Button>
+              <Button
+                size="icon"
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedDevice(device);
+                  setIsDeleteOpen(true);
+                }}
+              >
+                <Trash className="w-4 h-4 text-red-500" />
+              </Button>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+      
       )}
 
       {/* Device Modal */}

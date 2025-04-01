@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  darkMode: "class",
+  reactStrictMode: true,
   images: {
     domains: ["logo.clearbit.com"], // Allow Clearbit images
   },

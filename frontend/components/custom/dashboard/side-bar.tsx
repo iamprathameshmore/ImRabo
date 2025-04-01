@@ -7,6 +7,7 @@ import {
     Bot,
     Command,
     GalleryVerticalEnd,
+    Gamepad,
     HelpCircle,
     LifeBuoy,
     PhoneCall,
@@ -71,7 +72,7 @@ const data = {
         {
             title: "Devices",
             url: "/dashboard/devices",
-            icon: BookOpen,
+            icon: Gamepad,
 
         },
         {
