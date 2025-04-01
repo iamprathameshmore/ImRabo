@@ -12,6 +12,7 @@ import {
   UserCircleIcon,
   Settings,
   LogOutIcon,
+  UserRoundIcon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -63,9 +64,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <AppSidebar />
       <SidebarInset className="rounded">
         <header className="flex h-16 shrink-0 items-center justify-between px-4 border-b border-gray-300 dark:border-gray-700">
-          <div className="flex items-center gap-2">
-            <SidebarTrigger />
-            <Breadcrumb className="hidden md:block">
+          <div className="flex items-center gap-2 justify-center">
+            <SidebarTrigger  className="dark:text-white"/>
+            <Breadcrumb className="hidden md:block mt-0.5">
               <BreadcrumbList>
                 {pathSegments.map((segment, index) => {
                   const href = `/${pathSegments.slice(0, index + 1).join("/")}`;
@@ -74,10 +75,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   return (
                     <BreadcrumbItem key={href}>
                       {isLast ? (
-                        <BreadcrumbPage>{formattedSegment}</BreadcrumbPage>
+                        // <BreadcrumbPage>{formattedSegment}</BreadcrumbPage>
+                        <Button size='sm' variant='link' className="dark:text-white text-black">{formattedSegment}</Button>
                       ) : (
                         <>
-                          <BreadcrumbLink href={href}>{formattedSegment}</BreadcrumbLink>
+                         <Link href={href}><Button size='sm' variant='link' className="dark:text-zinc-400 text-zinc-700">{formattedSegment}</Button></Link>
                           {/* Avoid nested <li> tags and use a non-<li> separator */}
                           <span className="mx-2">/</span>
                         </>
@@ -95,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <UserCircleIcon className="h-6 w-6" />
+                  <UserRoundIcon  className="h-14 w-14 dark:text-white" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">

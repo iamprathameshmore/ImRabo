@@ -44,10 +44,12 @@ export function DeviceModal({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-white dark:bg-zinc-800 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle>{isEdit ? "Edit Device" : "Add Device"}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-zinc-900 dark:text-zinc-100">
+            {isEdit ? "Edit Device" : "Add Device"}
+          </DialogTitle>
+          <DialogDescription className="text-zinc-600 dark:text-zinc-400">
             {isEdit
               ? "Update the details of your device."
               : "Enter the details of your device."}
@@ -57,7 +59,10 @@ export function DeviceModal({
         <div className="space-y-4">
           {/* Device Name */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="device-name" className="text-right">
+            <Label
+              htmlFor="device-name"
+              className="text-right text-zinc-900 dark:text-zinc-200"
+            >
               Device Name
             </Label>
             <Input
@@ -65,27 +70,29 @@ export function DeviceModal({
               placeholder="Enter device name"
               value={device.deviceName}
               onChange={(e) => setDevice({ ...device, deviceName: e.target.value })}
-              className="col-span-3"
+              className="col-span-3 bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500"
             />
           </div>
 
           {/* Device Model */}
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="device-model" className="text-right">
+            <Label
+              htmlFor="device-model"
+              className="text-right text-zinc-900 dark:text-zinc-200"
+            >
               Device Model
             </Label>
 
             <Select
               value={device.deviceType}
               onValueChange={(value) => setDevice({ ...device, deviceType: value })}
+              // className="dark:bg-zinc-700 dark:text-zinc-100 dark:border-zinc-600"
             >
-              <SelectTrigger>
-                <Button>
-                  {device.deviceType ? device.deviceType : "Select a Model"}
-                  <ArrowDown className="ml-2" />
-                </Button>
+              <SelectTrigger className="bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 border border-zinc-300 dark:border-zinc-600 focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500">
+                {device.deviceType ? device.deviceType : "Select a Model"}
+                <ArrowDown className="ml-2" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="dark:bg-zinc-800">
                 {deviceModels.map((model) => (
                   <SelectItem key={model} value={model}>
                     {model}
@@ -97,7 +104,10 @@ export function DeviceModal({
         </div>
 
         <DialogFooter>
-          <Button onClick={handleSave}>
+          <Button
+            onClick={handleSave}
+            className="bg-blue-600 text-white hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400"
+          >
             {isEdit ? "Save Changes" : "Add Device"}
           </Button>
         </DialogFooter>

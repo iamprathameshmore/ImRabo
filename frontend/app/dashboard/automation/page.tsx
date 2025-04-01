@@ -15,7 +15,7 @@ export default function AutomationCards() {
   ]);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6 md:p-6">
       <div className="mb-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Automation Management</h1>
         <Button onClick={() => router.push("/dashboard/automation/create")} className="flex items-center gap-2">
