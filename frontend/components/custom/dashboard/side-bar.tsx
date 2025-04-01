@@ -20,9 +20,9 @@ import { NavMain } from "./nav-main"
 import {
     Sidebar,
     SidebarContent,
-   
+
     SidebarGroup,
-   
+
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,

@@ -15,10 +15,10 @@ export default function HelpCenter() {
             Find answers to your questions or get in touch with us.
           </p>
           <div className="flex gap-4 mt-4">
-            <Link href="/faqs">
+            <Link href="/dashboard/support/FAQs">
               <Button variant="outline">FAQs</Button>
             </Link>
-            <Link href="/contact">
+            <Link href="/dashboard/support/contact">
               <Button>Contact Support</Button>
             </Link>
           </div>
