@@ -79,15 +79,15 @@ export default function VerifyPage() {
                         <InputOTPGroup>
                             <InputOTPSlot index={0} />
                         </InputOTPGroup>
-                        <InputOTPSeparator />
+                       
                         <InputOTPGroup>
                             <InputOTPSlot index={1} />
                         </InputOTPGroup>
-                        <InputOTPSeparator />
+                      
                         <InputOTPGroup>
                             <InputOTPSlot index={2} />
                         </InputOTPGroup>
-                        <InputOTPSeparator />
+                       
                         <InputOTPGroup>
                             <InputOTPSlot index={3} />
                         </InputOTPGroup>
@@ -108,6 +108,19 @@ export default function VerifyPage() {
                     </button>
                 </p>
             </div>
+            {/* Fixed Bottom Footer */}
+      <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4">
+        <div className="text-center text-xs text-muted-foreground">
+          <p>
+            By clicking continue, you agree to our{" "}
+            <br />
+            <Button variant='link' size='sm' className="text-xs text-black dark:text-white"> Terms of Service</Button>
+            and
+            <Button variant='link' size='sm' className="text-xs text-black dark:text-white"> Privacy Policy</Button>
+            
+          </p>
+        </div>
+      </div>
         </div>
     );
 }

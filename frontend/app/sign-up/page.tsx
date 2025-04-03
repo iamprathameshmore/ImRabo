@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { GalleryVerticalEnd } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,15 +13,12 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  
-  
-  
-    useEffect(() => {
-      const token = sessionStorage.getItem("token"); // Check if the token exists
-      if (token) {
-        router.push("/dashboard"); // Redirect if already authenticated
-      }
-    }, [router]);
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,8 +39,8 @@ export default function SignupPage() {
 
       if (response.ok) {
         toast.success("OTP sent to your email!");
-        sessionStorage.setItem("email", email); // Store email for verification
-        router.push("/verification"); // Redirect to OTP verification page
+        sessionStorage.setItem("email", email);
+        router.push("/verification");
       } else {
         toast.error(data.msg || "Signup failed.");
       }
@@ -62,19 +58,8 @@ export default function SignupPage() {
           <form onSubmit={handleSignup}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center gap-2">
-                <a href="#" className="flex flex-col items-center gap-2 font-medium">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-md">
-                    <GalleryVerticalEnd className="size-6" />
-                  </div>
-                  <span className="sr-only">Acme Inc.</span>
-                </a>
+              
                 <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
-                <div className="text-center text-sm">
-                  Already have an account?{" "}
-                  <a href="/log-in" className="underline underline-offset-4">
-                    Login
-                  </a>
-                </div>
               </div>
 
               <div className="flex flex-col gap-6">
@@ -107,11 +92,26 @@ export default function SignupPage() {
             </div>
           </form>
 
-          <div className="text-center text-xs text-muted-foreground">
-            By clicking continue, you agree to our{" "}
-            <a href="#" className="underline">Terms of Service</a> and{" "}
-            <a href="#" className="underline">Privacy Policy</a>.
+          <div className="text-center text-sm">
+            Already have an account?{" "}
+            <a href="/" className="underline underline-offset-4">
+              Login
+            </a>
           </div>
+        </div>
+      </div>
+
+      {/* Fixed Bottom Footer */}
+      <div className="fixed bottom-0 left-0 w-full bg-white shadow-md p-4">
+        <div className="text-center text-xs text-muted-foreground">
+          <p>
+            By clicking continue, you agree to our{" "}
+            <br />
+            <Button variant='link' size='sm' className="text-xs text-black dark:text-white"> Terms of Service</Button>
+            and
+            <Button variant='link' size='sm' className="text-xs text-black dark:text-white"> Privacy Policy</Button>
+            
+          </p>
         </div>
       </div>
     </div>

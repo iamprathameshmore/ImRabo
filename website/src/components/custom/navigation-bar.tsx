@@ -60,7 +60,7 @@ const navigationItems = [
         },
         {
         title: "Contact us",
-        href: "/contact",
+        href: "/#contact",
         },
     ],
     },
@@ -128,8 +128,8 @@ return (
             Book a demo
         </Button>
         <div className="border-r hidden md:inline"></div> */}
-       <Link href={'/log-in'}> <Button variant="outline">Log in</Button></Link>
-        <Link href={'/sign-up'} ><Button type='submit'>Get started</Button></Link>
+       <Link href={'https://app.imrabo.com/'}> <Button variant="outline">Log in</Button></Link>
+        <Link href={'https://app.imrabo.com/sign-up'} ><Button type='submit'>Get started</Button></Link>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">
         <Button variant="ghost" onClick={() => setOpen(!isOpen)}>
