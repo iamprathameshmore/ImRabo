@@ -29,8 +29,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const [isDarkMode, setIsDarkMode] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  // const token = sessionStorage.removeItem("token");
   
   useEffect(() => {
+     
+    // if(token == null) return router.replace("/")
+
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
       document.documentElement.classList.add("dark");
@@ -52,7 +56,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = () => {
     sessionStorage.removeItem("token");
-    router.replace("/log-in");
+    router.replace("/");
   };
 
   if (loading) return <div className="flex justify-center items-center h-screen bg-zinc-300 dark:bg-zinc-800">Loading...</div>;
@@ -94,7 +98,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
               {isDarkMode ? <SunIcon className="h-5 w-5 text-blue-500" /> : <MoonIcon className="h-5 w-5 text-blue-500" />}
             </Button>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
                   <UserRoundIcon  className="h-14 w-14 dark:text-white" />
@@ -118,14 +122,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   <LogOutIcon /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
+              <Link href={'/dashboard/profile'}>   <Button variant="ghost" size="icon" className="rounded-full">
+                  <UserRoundIcon  className="h-14 w-14 dark:text-white" />
+                </Button></Link>
           </div>
         </header>
         <main className="flex flex-col flex-1 p-6">{children}</main>
-        <footer className="w-full dark:bg-black py-6 text-center">
-          <span className="text-sm">
+        <footer className="w-full  dark:bg-black py-6 text-center">
+          <span className="text-sm dark:text-white">
             &copy; {new Date().getFullYear()} Created By
-            <Link href="/">
+            <Link href="https://www.linkedin.com/in/iamprathameshmore/" target="_blank">
               <span className="hover:underline text-blue-500 ml-2">@iamprathameshmore</span>
             </Link>
           </span>

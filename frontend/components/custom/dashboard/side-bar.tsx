@@ -6,6 +6,7 @@ import {
     BookOpen,
     Bot,
     Command,
+    Dot,
     GalleryVerticalEnd,
     Gamepad,
     HelpCircle,
@@ -21,6 +22,8 @@ import {
     Sidebar,
     SidebarContent,
 
+    SidebarFooter,
+
     SidebarGroup,
 
     SidebarHeader,
@@ -33,6 +36,7 @@ import {
 import Link from "next/link"
 import Image from "next/image"
 import logo from "@/public/imrabo/logo.png"
+import { Button } from "@/components/ui/button"
 
 // This is sample data.
 const data = {
@@ -135,6 +139,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={data.navMain} title={'Options'} />
                 <NavMain items={data.support} title={'Help & Support'} />
             </SidebarContent>
+
+            <SidebarFooter>
+                <Link href={'/server-status'} > <Button variant='link' size='sm' className="flex justify-start items-center "> <Dot/>Server Status</Button></Link>
+            </SidebarFooter>
 
         </Sidebar>
     )
